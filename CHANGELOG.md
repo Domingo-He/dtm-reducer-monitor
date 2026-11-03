@@ -8,6 +8,7 @@
 
 ### 文件
 - 補上 v2.1.0 的 Zenodo DOI（10.5281/zenodo.23910956）：`CITATION.cff`、兩份 README 開頭的 DOI 徽章與引用說明、技術揭露三語版第 10 節公開紀錄與首次公開日期（揭露內容未變）。
+- 技術揭露三語版第 10 節填入 Software Heritage 存檔紀錄（2026-11-03，快照 `swh:1:snp:5ed950bfd9f6504de62f8d48b257f0dc1e9db1bf`）。
 
 ## [2.1.0] - 2026-11-03（第一個公開版本，Beta）
 
