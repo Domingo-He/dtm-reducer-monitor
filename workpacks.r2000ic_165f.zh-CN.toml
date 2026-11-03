@@ -1,0 +1,399 @@
+# 备件与作业包目录（简体中文版）：由 workpacks.r2000ic_165f.toml 自动生成，请修改繁中原档后执行 tools/workpack_l10n.py 重新生成。
+# 物料号来自公开资料，下单前请以机台 Parts list 与铭牌确认；工时为参考估算。
+
+[meta]
+robot_model = "R-2000iC/165F"
+manual = "R-2000iC 机构部维护手册（B-83645EN）"
+updated = "2026-10-14"
+note = "物料号来自公开数据，下单前请以机台 Parts list 与铭牌确认"
+
+[toolsets.hand]
+name = "手工具"
+items = [
+  { name = "公制六角扳手组（含长柄）", qty = 1, unit = "组" },
+  { name = "套筒扳手组（含延长杆、万向接头）", qty = 1, unit = "组" },
+  { name = "扭矩扳手：低扭矩段", spec = "范围依手册螺栓扭矩表", qty = 1, unit = "支" },
+  { name = "扭矩扳手：高扭矩段", spec = "范围依手册螺栓扭矩表", qty = 1, unit = "支" },
+  { name = "顶丝（分离减速机用）", spec = "规格依顶出螺孔", qty = 2, unit = "支" },
+  { name = "导杆（与固定螺栓同规格的长螺杆，对位用）", qty = 2, unit = "支" },
+  { name = "塑料槌、铜棒", qty = 1, unit = "组" },
+  { name = "刮刀、油石（清除旧密封胶与毛边）", qty = 1, unit = "组" },
+]
+
+[toolsets.lifting]
+name = "吊装与支撑"
+items = [
+  { name = "行车或移动式吊架", spec = "额定荷重 ≥ 被吊物重量 2 倍（重量依手册）", qty = 1, unit = "台" },
+  { name = "M10 吊环螺栓", spec = "手册指定的 J3 臂支撑方式", qty = 2, unit = "个" },
+  { name = "吊带", spec = "额定荷重符合吊装计划", qty = 2, unit = "条" },
+  { name = "手拉吊车（微调对位）", qty = 1, unit = "台" },
+  { name = "支撑架或枕木", qty = 1, unit = "组" },
+]
+
+[toolsets.grease]
+name = "注脂与采样"
+items = [
+  { name = "手动黄油枪（附压力表）", spec = "手册要求用手动泵", qty = 1, unit = "支" },
+  { name = "注脂嘴转接头", qty = 1, unit = "组" },
+  { name = "废脂收集袋或容器", qty = 2, unit = "个" },
+  { name = "电子秤（量注入与排出量）", qty = 1, unit = "台" },
+  { name = "铁粉采样瓶（旧脂中段、24 小时后残留）", qty = 2, unit = "个" },
+]
+
+[toolsets.check]
+name = "检查与校正"
+items = [
+  { name = "示教器", qty = 1, unit = "台" },
+  { name = "USB U盘（控制器备份）", qty = 1, unit = "个" },
+  { name = "万用表", qty = 1, unit = "台" },
+  { name = "手电筒、检查镜", qty = 1, unit = "组" },
+  { name = "标记笔、线材标签（拆线前标记）", qty = 1, unit = "组" },
+  { name = "零点标定用具", spec = "依厂内采用的校正方式", qty = 1, unit = "组" },
+]
+
+[toolsets.ppe]
+name = "防护与上锁"
+items = [
+  { name = "安全帽、安全鞋", qty = 1, unit = "每人" },
+  { name = "耐油手套、耐热手套", qty = 1, unit = "每人" },
+  { name = "护目镜", qty = 1, unit = "每人" },
+  { name = "上锁挂牌组（个人锁、标签）", qty = 1, unit = "每人" },
+  { name = "清洁溶剂、无尘布、吸油棉", qty = 1, unit = "批" },
+]
+
+[[pack]]
+id = "R2000iC165F-J3-reducer"
+title = "J3 减速机更换"
+comp = "reducer"
+axes = [3]
+crew = 3
+hours_min = 10
+hours_max = 16
+hours_note = "参考估算，非原厂标准工时；第一次作业建议排两个班次。密封胶若需固化时间另计。"
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "作业负责人", n = 1, duty = "机器人维修技师：上锁挂牌、拆装电机、零点标定、试运转" },
+  { role = "机械技师", n = 1, duty = "拆装减速机、清洁接合面、螺栓扭矩、注脂" },
+  { role = "吊装作业人员", n = 1, duty = "持吊装相关证照：吊车操作与指挥、J3 臂支撑" },
+]
+safety = [
+  "作业前召开工具箱会议：确认分工、吊装计划、紧急停止位置",
+  "控制器断电并上锁挂牌；每位进入围栏的人员挂上自己的锁",
+  "拆 J3 电机或解除 J3 制动器前，先用 M10 吊环螺栓 ×2 与吊带把 J3 臂吊住并受力；未支撑时手臂会落下",
+  "吊装由持证人员指挥；吊物下方与移动路径禁止站人；确认吊具额定荷重",
+  "刚停机的电机与减速机可能高温：戴耐热手套或等待冷却",
+  "打开排脂口时油脂可能突然喷出：先套收集袋；注脂只用手动泵与指定油脂",
+  "需要上电点动（释放残压、零点标定）时：人员退出围栏或握持示教器使能开关，倍率 10% 以下",
+  "溶剂与密封胶在通风处使用并戴手套；废脂与沾油废弃物依厂内规定处理",
+  "高处作业使用合格工作平台，依规定系安全带",
+  "完工前清点工具，确认没有遗留在机构内；解除挂牌由挂锁人本人运行",
+]
+steps = [
+  { name = "移到手册指定的拆卸姿态、断电上锁、工具箱会议（核对备品与备份控制器在停机前完成）", crew = 2, hours = 1.0 },
+  { name = "支撑 J3 臂（吊环螺栓＋吊带受力）；排出旧脂，先丢弃前段、取中段作铁粉样本", crew = 3, hours = 1.0 },
+  { name = "标记并拆下 J3 电机线材，拆下 J3 电机", crew = 2, hours = 0.5 },
+  { name = "拆固定螺栓、吊离 J3 臂组放上支撑架，顶出旧减速机", crew = 3, hours = 2.0 },
+  { name = "清洁接合面；检查定位销、螺孔、电机侧齿轮齿面", crew = 2, hours = 1.0 },
+  { name = "安装新减速机：O 形环、密封胶、对角分段锁到规定扭矩", crew = 2, hours = 2.0 },
+  { name = "吊回 J3 臂并对位锁固；装回 J3 电机并接线；确认制动器撑住后拆除吊具（上电前必须拆完）", crew = 3, hours = 1.5 },
+  { name = "注脂（排脂口打开，注入到新脂流出）并释放残压", crew = 2, hours = 1.0 },
+  { name = "脉冲重置与 J3 零点标定；以既有程序点位确认", crew = 2, hours = 1.5 },
+  { name = "试运转、漏油与异音检查；运行 DTM_DIAG 并登录事件", crew = 2, hours = 1.0 },
+]
+
+[[pack.parts]]
+name = "J3 减速机（RV）"
+pn = "A97L-0218-0989#218"
+qty = 1
+unit = "台"
+stock = 0
+verified = false
+main = true
+source = "零件商标示为 R-2000iC/165F J3；其他负载型号后缀可能不同"
+
+[[pack.parts]]
+name = "润滑脂 VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "桶"
+grease = true
+verified = false
+source = "FANUC 注脂数据：R-2000iC 机构部用 A98L-0040-0174"
+
+[[pack.parts]]
+name = "减速机 O 形环与密封件"
+pn = "依 Parts list"
+qty = 1
+unit = "套"
+verified = false
+
+[[pack.parts]]
+name = "J3 电机 O 形环"
+pn = "依 Parts list"
+qty = 1
+unit = "个"
+verified = false
+
+[[pack.parts]]
+name = "注脂口／排脂口密封螺栓"
+pn = "依 Parts list"
+qty = 2
+unit = "个"
+verified = false
+note = "密封垫损伤或涂胶失效就换新"
+
+[[pack.parts]]
+name = "减速机与 J3 臂固定螺栓"
+pn = "依 Parts list"
+qty = 1
+unit = "组"
+verified = false
+note = "拆下的螺栓若变形或螺纹损伤就换新"
+
+[[pack.parts]]
+name = "螺纹固定剂"
+pn = "依手册指定"
+qty = 1
+unit = "瓶"
+verified = false
+
+[[pack.parts]]
+name = "平面密封胶"
+pn = "依手册指定"
+qty = 1
+unit = "支"
+verified = false
+
+[[pack]]
+id = "R2000iC165F-J2-reducer"
+title = "J2 减速机更换"
+comp = "reducer"
+axes = [2]
+crew = 4
+hours_note = "J2 更换涉及平衡器与上臂支撑，工时与步骤请依手册补上"
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "作业负责人", n = 1, duty = "机器人维修技师：上锁挂牌、平衡器处置、零点标定" },
+  { role = "机械技师", n = 2, duty = "拆装减速机与平衡器、螺栓扭矩、注脂" },
+  { role = "吊装作业人员", n = 1, duty = "持吊装相关证照：吊车操作与指挥" },
+]
+safety = [
+  "J2 更换涉及平衡器：依手册固定平衡器后才能拆解，平衡器内有弹簧预压",
+  "拆 J2 电机或解除制动器前，先支撑 J2 臂与上方机构；未支撑时手臂会落下",
+  "控制器断电并上锁挂牌；吊装由持证人员指挥",
+]
+steps = []
+
+[[pack.parts]]
+name = "J2 减速机（RV）"
+pn = "A97L-0218-0988#249"
+qty = 1
+unit = "台"
+stock = 0
+verified = false
+source = "零件商标示为 R-2000iC/165F J2"
+main = true
+
+[[pack.parts]]
+name = "润滑脂 VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "桶"
+grease = true
+verified = false
+source = "FANUC 注脂数据：R-2000iC 机构部用 A98L-0040-0174"
+
+[[pack.parts]]
+name = "减速机 O 形环、密封件、密封螺栓"
+pn = "依 Parts list"
+qty = 1
+unit = "套"
+verified = false
+
+[[pack]]
+id = "R2000iC165F-J23-motor"
+title = "伺服电机更换（J2／J3）"
+comp = "motor"
+axes = [2, 3]
+crew = 3
+hours_min = 3
+hours_max = 5
+hours_note = "参考估算；电机拆下后需要脉冲重置与零点标定"
+toolsets = ["hand", "lifting", "check", "ppe"]
+roles = [
+  { role = "作业负责人", n = 1, duty = "机器人维修技师：上锁挂牌、拆装电机、脉冲重置、零点标定" },
+  { role = "机械技师", n = 1, duty = "拆装螺栓、O 形环、补脂" },
+  { role = "吊装作业人员", n = 1, duty = "持吊装相关证照：拆电机前支撑手臂" },
+]
+safety = [
+  "控制器断电并上锁挂牌；拆线前标记",
+  "拆电机前先支撑该轴手臂并受力；伺服电机或制动器拆下后，未支撑的手臂会落下",
+  "刚停机的电机可能高温：戴耐热手套或等待冷却",
+  "上电点动时人员退出围栏或握持示教器使能开关，倍率 10% 以下",
+]
+steps = [
+  { name = "准备：核对电机型号与铭牌、备份控制器、断电上锁", crew = 2, hours = 0.5 },
+  { name = "支撑手臂（吊环螺栓＋吊带受力）", crew = 3, hours = 0.5 },
+  { name = "标记并拆下线材，拆下电机", crew = 2, hours = 0.5 },
+  { name = "检查齿轮与减速机输入端；装新电机（新 O 形环）并接线；确认制动器撑住后拆除吊具", crew = 3, hours = 0.75 },
+  { name = "脉冲重置与零点标定；以既有程序点位确认", crew = 2, hours = 1.0 },
+  { name = "试运转、温度与异音检查；运行 DTM_DIAG 并登录事件", crew = 2, hours = 0.75 },
+]
+
+[[pack.parts]]
+name = "伺服电机 αiSR30/3000"
+pn = "A06B-2041-B605#0042"
+qty = 1
+unit = "台"
+stock = 0
+verified = false
+source = "FANUC R-2000iC 型录（A-97606-0293E）列为 J2、J3 电机"
+note = "以机台电机铭牌为准"
+main = true
+
+[[pack.parts]]
+name = "电机 O 形环"
+pn = "依 Parts list"
+qty = 1
+unit = "个"
+verified = false
+
+[[pack.parts]]
+name = "电机固定螺栓"
+pn = "依 Parts list"
+qty = 1
+unit = "组"
+verified = false
+
+[[pack]]
+id = "R2000iC165F-J23-grease"
+title = "减速机换脂（J2／J3）"
+comp = "grease"
+axes = [2, 3]
+crew = 2
+hours_min = 2
+hours_max = 3
+hours_note = "参考估算，单轴；注脂量与残压释放时间依手册"
+toolsets = ["grease", "check", "ppe"]
+roles = [
+  { role = "作业负责人", n = 1, duty = "机器人维修技师：上锁挂牌、点动到注脂姿态、释放残压" },
+  { role = "注脂人员", n = 1, duty = "开关密封螺栓、注脂、秤重、采样" },
+]
+safety = [
+  "开关密封螺栓时断电上锁；需要点动时人员退出围栏",
+  "打开排脂口时油脂可能突然喷出：先套收集袋",
+  "只用手动泵与指定油脂；注脂时排脂口必须打开，避免内压损伤油封",
+]
+steps = [
+  { name = "点动到注脂姿态，断电上锁", crew = 2, hours = 0.5 },
+  { name = "打开排脂口并套袋；排出的旧脂先丢弃前段（排出口附近停滞的油脂），取中段约 5 g 装瓶作铁粉样本（DTM 样本类型：换脂排出（中段））", crew = 2, hours = 0.25 },
+  { name = "以手动泵从注脂口注入，直到排脂口流出新脂；记录注入与排出重量", crew = 2, hours = 1.0 },
+  { name = "排脂口打开，依手册运转释放残压", crew = 2, hours = 0.5 },
+  { name = "装回密封螺栓、清洁；在 DTM 登录换脂与铁粉", crew = 1, hours = 0.25 },
+]
+
+[[pack.parts]]
+name = "润滑脂 VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "桶"
+grease = true
+verified = false
+source = "FANUC 注脂数据：R-2000iC 机构部用 A98L-0040-0174"
+
+[[pack.parts]]
+name = "密封螺栓（或其密封垫）"
+pn = "依 Parts list"
+qty = 2
+unit = "个"
+verified = false
+note = "密封垫损伤就换新"
+
+[[pack]]
+id = "R2000iC165F-E1-gearbox"
+title = "E1 行走轴减速机（齿轮箱）更换"
+comp = "gearbox"
+axes = [7]
+crew = 3
+hours_min = 4
+hours_max = 8
+hours_note = "参考估算；依行走轴厂商手册。更换后需检查小齿轮与齿条啮合间隙、零点标定"
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "作业负责人", n = 1, duty = "机器人维修技师：上锁挂牌、行走轴固定、零点标定" },
+  { role = "机械技师", n = 1, duty = "拆装电机与减速机、调整齿条啮合、螺栓扭矩" },
+  { role = "吊装作业人员", n = 1, duty = "持吊装相关证照：减速机吊装" },
+]
+safety = [
+  "控制器断电并上锁挂牌；行走轴滑座以止动块或楔块固定，防止滑移",
+  "轨道两端与滑座周边设警戒区，禁止人员进入行走范围",
+  "吊装由持证人员指挥；减速机重量依手册确认吊具荷重",
+]
+steps = [
+  { name = "准备：核对减速机型号、备份控制器、断电上锁、固定滑座", crew = 2, hours = 0.75 },
+  { name = "拆下电机（标记线材），拆下减速机与小齿轮", crew = 3, hours = 1.5 },
+  { name = "检查齿条磨耗与异物；装新减速机与小齿轮，调整啮合间隙", crew = 3, hours = 2.0 },
+  { name = "装回电机、接线、注脂；零点标定并以既有程序点位确认", crew = 2, hours = 1.25 },
+  { name = "低速往返试运转、异音与温度检查；运行 DTM_DIAG（E1 段）并登录事件", crew = 2, hours = 0.75 },
+]
+
+[[pack.parts]]
+name = "E1 行走轴减速机（齿轮箱）"
+pn = "依行走轴 Parts list"
+qty = 1
+unit = "台"
+stock = 0
+verified = false
+note = "以行走轴铭牌与厂商手册为准"
+main = true
+
+[[pack.parts]]
+name = "E1 小齿轮（啮合齿条侧）"
+pn = "依行走轴 Parts list"
+qty = 1
+unit = "个"
+verified = false
+note = "小齿轮磨耗时一并更换"
+
+[[pack.parts]]
+name = "齿轮箱与齿条用润滑脂"
+pn = "依行走轴手册指定"
+qty = 1
+unit = "批"
+grease = true
+verified = false
+
+[[pack]]
+id = "R2000iC165F-E1-grease"
+title = "E1 行走轴注脂（齿轮箱、齿条与小齿轮）"
+comp = "grease"
+axes = [7]
+crew = 2
+hours_min = 1
+hours_max = 2
+hours_note = "参考估算；注脂周期与注脂量依行走轴厂商手册（自动注脂器的话检查残量与出脂）"
+toolsets = ["grease", "check", "ppe"]
+roles = [
+  { role = "作业负责人", n = 1, duty = "机器人维修技师：上锁挂牌、行走轴低速往返" },
+  { role = "注脂人员", n = 1, duty = "齿轮箱注脂、齿条清洁与涂脂、自动注脂器检查" },
+]
+safety = [
+  "注脂、清洁齿条时断电上锁并固定滑座",
+  "需要往返运转让油脂分布时，人员退出行走范围、倍率 10% 以下",
+]
+steps = [
+  { name = "断电上锁、固定滑座，清除齿条旧脂与粉尘，目视检查齿面", crew = 2, hours = 0.5 },
+  { name = "齿轮箱依手册注脂（排脂口打开）；齿条与小齿轮涂脂或补充自动注脂器", crew = 2, hours = 0.5 },
+  { name = "低速全行程往返数次让油脂分布；在 DTM 登录换脂", crew = 2, hours = 0.5 },
+]
+
+[[pack.parts]]
+name = "齿轮箱与齿条用润滑脂"
+pn = "依行走轴手册指定"
+qty = 1
+unit = "批"
+grease = true
+verified = false
+
+# [[pack]]
+# [[pack.parts]]

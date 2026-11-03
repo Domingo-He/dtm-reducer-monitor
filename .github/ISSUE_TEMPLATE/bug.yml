@@ -1,0 +1,49 @@
+name: 錯誤回報
+description: 程式出錯、畫面不對，或判斷明顯不合理
+title: "[錯誤] "
+labels: ["bug"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: DTM 版本（python -m dtm version）
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: 使用模式
+      options: [單機, 小型模式, 邊緣主機, 中央伺服器, 模擬器或演示]
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: 發生了什麼
+      description: 在哪個畫面或指令、看到什麼
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 應該是什麼
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 怎麼重現
+      description: 能在模擬器（start_sim.bat）重現最好
+  - type: textarea
+    id: log
+    attributes:
+      label: 記錄檔片段
+      description: logs/dtm.log 出錯前後幾行（請先去除 IP、人名、電話與密碼）
+      render: text
+  - type: checkboxes
+    id: nodata
+    attributes:
+      label: 確認
+      options:
+        - label: 我沒有附上原始資料、資料庫或公司內部資料
+          required: true

@@ -1,0 +1,30 @@
+__pycache__/
+*.pyc
+*.sqlite3
+*.sqlite3-*
+*.log
+config.toml
+report.html
+features.csv
+backups/
+service/
+run/
+logs/
+*.running
+*.checked
+data/
+
+# 使用者自己的設定檔與資料（不要上傳）
+config.small.toml
+config.edge.toml
+config.central.toml
+users.sqlite3
+config_backups/
+# HTTPS 自簽憑證與私鑰（python -m dtm tls --self-signed），私鑰絕對不要上傳
+tls/
+*-key.pem
+dtm_validation_*.html
+dtm_validation_*.json
+*-sbom.cdx.json
+site/
+dist/

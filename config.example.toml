@@ -1,0 +1,473 @@
+# 現場設定範例（單機：一台電腦接一台機器人）。複製成 config.toml 後修改。
+# 啟動：python -m dtm -c config.toml run      正式使用建議裝成服務：python -m dtm -c config.toml service install
+# 一個廠區多台請看 config.edge.example.toml；中央伺服器請看 config.central.example.toml。
+
+[system]
+role = "standalone"            # standalone = 單機；edge = 邊緣主機（多台）；central = 中央伺服器
+site_id = ""                   # 廠區代碼，例如 "P3"；要上傳中央時必填
+site_name = ""                 # 廠區名稱，例如 "三廠"
+display_name = ""              # 畫面左上角的名稱；空白 = 用廠區名稱或機器人名稱（也可在畫面右上角「設定 → 一般」修改）
+run_dir = "run"                # 狀態檔、維護模式、看門狗紀錄
+log_dir = "logs"               # 記錄檔與當機紀錄（crash_*.log）
+disk_alarm_pct = 10            # 磁碟剩不到 10%：注意
+disk_critical_pct = 3          # 剩不到 3%：警戒，並暫停寫原始樣本（特徵、事件照常）
+
+[robot]
+name = "R-2000iC #1"
+id = ""                        # 機器人代碼，例如 "R14"；空白 = 用 name
+line = ""                      # 產線，例如 "L3 堆疊"
+model = "R-2000iC/165F"
+impact = "中"                  # 停機影響度：高／中／低（中央的風險矩陣用）
+# 資料來源：
+#   fanuc_http  直接讀控制器網頁伺服器的 MD:NUMREG.VA（免選配，約 2–5 次/秒）
+#   modbus      從 PLC 或閘道器讀保持暫存器（需 pymodbus）
+#   csv         重播匯出的資料
+#   sim         模擬器
+source = "fanuc_http"
+poll_hz = 4
+
+[source.fanuc_http]
+host = "192.168.0.10"          # 機器人控制器 IP
+timeout_s = 1.0
+path = "/MD/NUMREG.VA"
+
+[source.modbus]
+host = "192.168.0.20"
+port = 502
+unit = 1
+word_order = "big"             # 32 位元資料的字序：big 或 little
+# 欄位對應：addr 為保持暫存器位址（0 起算），type 為 int16 / uint16 / int32 / uint32 / float32
+[source.modbus.map]
+dt2  = { addr = 100, type = "int16", scale = 1.0 }
+dt3  = { addr = 101, type = "int16", scale = 1.0 }
+seg  = { addr = 110, type = "int16" }
+run  = { addr = 111, type = "int16" }
+hb   = { addr = 112, type = "int16" }
+ovr  = { addr = 113, type = "int16" }
+
+# 機器人端暫存器編號（與 robot/DTM_BG.LS、DTM_DIAG.LS 一致）
+[registers]
+dt_start  = 101   # R[101]~R[106] = J1~J6 干擾扭矩；有 E1 行走軸時 R[107] = E1（robot/DTM_BG_E1.LS）
+seg       = 110   # 段代碼：1000–8999 診斷段；9000–9899 生產動作代碼；9900–9999 振動取樣窗
+run       = 111   # 診斷執行旗標；填 0 改用自動判斷（依段代碼間隔）
+heartbeat = 112
+override  = 113
+temp      = 0     # 外殼溫度暫存器；沒有就填 0（沒有溫度時，系統改用「跨軸共模扣除」排除氣溫與冷機的影響）
+
+[axes]
+enabled = [2, 3]       # 軸號 1–6 = J1–J6，7 = 行走軸 E1（E1 預設 reducer_type = "rack"、直線軸，不判 G）
+
+[axis.2]
+name = "J2"
+dir_sign = 1           # 若 B 點角度小於 A 點，改成 -1
+k_nm_per_raw = 0.0     # 0 = 未校正，以原始值顯示；校正後填入或用 calibrate --save
+zero_offset = 0.0
+rated_nm = 0.0         # 減速機額定輸出扭矩 Nm（查型錄）；0 = 不做百分比警報
+rt_caution_pct = 80
+rt_alert_pct = 100
+rt_caution_raw = 0     # 未校正時可用原始值門檻；0 = 停用
+rt_alert_raw = 0
+
+reducer_type = "rv"    # rv = RV 減速機；gearbox = 齒輪箱（J4、手腕）
+grease_mass_g = 0      # 腔體給脂量 g（查手冊），用來計算鐵粉生成速率 W；0 = 不計算
+iron_caution_wt = -1   # 鐵粉門檻 wt%；-1 = 依型式預設（rv 0.05／0.10；gearbox 只用相對值）
+iron_alert_wt = -1
+# Pro 程式層級診斷（逐行損耗、壽命估計）用；0 = 未知，只做相對排名
+# rated_rpm = 15       # 額定輸出轉速 N0（RV 型錄常用 15 rpm）
+# rated_life_h = 6000  # 額定壽命 L0（RV 型錄常用 6000 h）
+# startstop_nm = 0     # 起動停止容許扭矩（Nm）；0 = RV 預設額定 2.5 倍
+# peak_nm = 0          # 瞬間最大容許扭矩（Nm）；0 = RV 預設額定 5 倍
+# peak_count = 1000    # 瞬間最大容許扭矩的容許次數 C
+# ratio = 0            # 減速比、針齒數：填了可把磨耗角度換算成預估針齒位置（拆檢對照）
+# pins = 0
+
+[axis.3]
+name = "J3"
+dir_sign = 1
+k_nm_per_raw = 0.0
+rated_nm = 0.0
+reducer_type = "rv"
+grease_mass_g = 0
+
+# [axis.4]               # 要監測 J4 齒輪箱時打開，並在 [axes] enabled 加入 4、教 PR[55]／PR[56]
+# name = "J4"
+# reducer_type = "gearbox"
+# grease_mass_g = 0
+
+[diag]
+trim_s = 1.0           # 每段頭尾各去掉的秒數（加減速）
+min_const_s = 2.0      # 去頭尾後至少要剩的等速秒數
+ref_pct = 10           # 摩擦 F 的參考速度（%）
+
+[health]
+baseline_runs = 10     # 重設後前 N 次診斷建立基準
+caution_ratio = 1.5    # 相對基準的倍數：注意
+alert_ratio = 2.0      # 相對基準的倍數：警戒
+caution_z = 2.0        # z 分數可提早升到注意（且比值 ≥ z_min_ratio）
+alert_z = 3.0          # 已達注意比值且 z ≥ 3 升為警戒
+z_min_ratio = 1.15
+min_std_frac = 0.05    # 基準標準差下限（基準平均的比例），避免 z 分數過度敏感
+confirm_runs = 2       # 連續幾次才升降級
+trend_window_runs = 30
+temp_comp = true       # 有溫度訊號時做溫度補償
+temp_min_range = 5.0   # 只監測一個軸、而且基準期溫差達到這個值時，改用基準期資料自己學溫度係數
+temp_coef_fv = 0.025   # 預設溫度係數：溫度每低 1°C，黏性摩擦約 +2.5%；累積一季資料後可用 temp-coef 指令估計
+temp_coef_fc = 0.004   # 固定摩擦受溫度影響小
+common_mode = true     # 跨軸共模扣除（監測兩軸以上才有作用）：扣除各軸「同時」發生的變化（氣溫、冷機、生產節拍）
+                       # 代價：所有軸以同樣速度一起劣化（例如同一天換的油脂一起老化）也會被扣掉，這種情況靠油脂壽命與鐵粉把關。
+                       # 有溫度訊號、並用 temp-coef 校正過係數後，可改成 "auto"（只在沒有溫度時扣），連這種情況也抓得到
+
+[motion]               # 生產中監測：生產程式在固定動作前後寫 R[110] = 9001…（範例 robot/DTM_MCODE_EXAMPLE.LS）
+enabled = true
+baseline_days = 10     # 重設後前 10 個有效日建立基準（每個動作代碼、每個軸各自）
+min_cycles_day = 20    # 一天至少 20 個有效循環才算有效日
+caution_ratio = 1.15   # 每日中位數相對基準：注意（起始值，累積現場資料後修正）
+alert_ratio = 1.30     # 警戒
+confirm_days = 2       # 連續 2 個有效日才升降級
+require_full_override = true   # 只採用倍率 100% 的循環
+# [motion.codes]       # 代碼名稱（選填）
+# "9001" = "搬運（有工件）"
+# "9002" = "空手回程"
+
+[sensors]              # 振動＋溫度感測器（IO-Link 主站或無線閘道，以 Modbus TCP 讀特徵值）
+enabled = false
+host = "192.168.0.30"
+port = 502
+unit = 1
+poll_hz = 2
+slow_s = 20            # 有線、無線不用設定：程式自動量每個感測器多久更新一次；超過 20 秒才更新的（電池型無線）
+                       # 只在數值變化時記錄，主要用於每日趨勢
+# [sensors.map]        # 鍵：「軸.方向.指標」或「軸.temp」；方向 radial／axial；指標 rms、env、mesh、motor1x、kurt
+# "2.radial.rms" = { addr = 200, type = "float32" }
+# "2.axial.rms"  = { addr = 202, type = "float32" }
+# "2.temp"       = { addr = 210, type = "float32" }
+# "ambient"      = { addr = 220, type = "float32" }   # 環境溫度
+
+# 設備設定：每軸有哪些量測（扭矩一定有）。也可以在儀表板「設備設定」勾選（本機、管理員），會自動寫回這裡。
+# 沒寫的軸依上面 [sensors.map] 有沒有對應的鍵自動判斷。
+# [devices]
+# ambient = true
+# [devices.axis.2]
+# temp = true
+# radial = true
+# axial = false
+
+[vibration]             # 振動特徵：由量測系統呼叫 /api/vibration、用 vib-import 匯入，或在儀表板手動登錄
+baseline_n = 10        # 重設後前 N 筆建立基準（徑向、軸向各自）
+caution_ratio = 2.0    # 相對基準 2 倍：注意
+alert_ratio = 3.0      # 相對基準 3 倍：警戒
+kurt_caution = 4.0     # 峭度絕對值（常態約 3）
+kurt_alert = 6.0
+ar_caution_ratio = 1.5 # 軸向／徑向比相對基準的變化（主軸承、軸向竄動）
+
+[iron]
+rv_caution_wt = 0.05   # RV 減速機起始預設，請用現場拆檢結果修正
+rv_alert_wt = 0.10
+w_caution_ratio = 2.0  # 鐵粉生成速率 W 相對新品基準
+w_alert_ratio = 3.0
+min_hours = 300        # 換脂後運轉不到這個時數不算 W
+default_sample = "drain_mid"  # 預設樣本：換脂排出（中段）。排出口附近的前段先丟棄，取中段送驗
+interval_days = 0             # 正常時的取樣間隔（天）；0 = 只在換脂時取樣
+interval_caution_days = 60    # 鐵粉達注意後改成每 60 天取樣一次，自動排進保養排程
+interval_alert_days = 21      # 達警戒後每 21 天
+# 鐵粉達注意後不再直線外推剩餘天數（已過轉折點，可能隨時惡化），備品直接建議下單；
+# 生成速率 W 連續兩次加速上升，鐵粉的嚴重度升一級。
+
+[thermal]              # 溫度：穩定的高溫只縮短換脂週期（[life] grease_temp_ref_c），突然升溫才當異常
+rise_c = 8.0           # 溫升 ΔT＝外殼−環境（同一個動作代碼的每日中位數），比自己 14 天中位數高 8°C →「溫度突升」注意
+day_rise_c = 5.0       # 或一天內升 5°C，而且環境溫度沒有同步升
+baseline_days = 14
+min_days = 5           # 基準期至少幾個有效日才判斷
+min_cycles_day = 5     # 一天至少幾個循環才算有效日
+post_grease_h = 72     # 換脂後 72 小時內不判突升；超過 72 小時仍比換脂前高 post_grease_hold_c → 提醒檢查內壓與油封
+post_grease_hold_c = 5.0
+overheat_c = 0         # 外殼過熱絕對門檻（°C），達到直接發警戒；0 = 停用
+# 沒有環境溫度感測器時，用其他軸外殼溫度的中位數當參考（至少要另外 2 軸有溫度）；
+# 連這個也沒有，溫度突升只顯示、不發警報。
+
+[life]
+hours_per_day = 20             # 沒有時數表讀數時的估算；有讀數（hours 指令或事件填時數）就自動改用實際值
+grease_interval_h = 11520      # 換脂週期（時數），依機型維護手冊
+grease_interval_years = 3      # 換脂週期（年），與時數先到者為準
+grease_temp_ref_c = 40         # 外殼溫度每高於此值 10°C，油脂有效老化加倍（只加速、不延長）
+spare_lead_days = 60           # 減速機、馬達備品前置天數
+weibull_min_failures = 3       # 失效紀錄達此筆數才用自己的資料擬合 Weibull
+[life.prior]                   # 紀錄不足時的先驗（beta 形狀、eta_h 特徵壽命）；0 = 不做年齡風險
+reducer = { beta = 0, eta_h = 0 }
+gearbox = { beta = 0, eta_h = 0 }
+motor   = { beta = 0, eta_h = 0 }
+
+[decision]
+grease_age_start = 0.7   # 油脂有效壽命用掉 70% 開始提高換脂分數
+recovery_ratio = 1.3     # 換脂後仍高於新品基準這個倍數 → 判定減速機
+act_ratio = 0.5          # 分數 ≥ 0.5：建議換脂／準備備品／檢查馬達
+urgent_ratio = 0.9       # 分數 ≥ 0.9：立即換脂／安排更換
+p_fail_prepare = 0.2     # 備品前置期間內的失效機率 ≥ 此值：準備備品
+
+[decision.weights]       # 各證據在家族內的比重（0–1）。換減速機要兩個家族（扭矩／鐵粉／振動）同時異常
+fc_ripple = 1.0          # 扭矩：固定摩擦 Fc、漣波、累積比值
+f_motion = 0.8           # 扭矩：參考速度摩擦 F、生產循環每日中位數
+temp_rise = 0.6          # 溫度突升（算在扭矩／摩擦家族；只有溫度異常時最多「觀察」）
+vib_reducer = 1.0        # 振動：包絡、嚙合頻率、峭度
+vib_axial = 0.8          # 振動：軸向 RMS、軸向比
+iron = 1.0               # 鐵粉：濃度、生成速率
+
+[realtime]
+hold_s = 2.0           # 即時警報需持續幾秒才觸發／解除
+stale_s = 5.0          # 心跳幾秒不變視為資料中斷
+
+[storage]
+db = "dtm.sqlite3"
+raw_retention_days = 7 # 原始樣本保留天數；每分鐘統計與診斷特徵永久保留
+raw_keep_days = 180    # 診斷段的原始波形、每次警報前後的原始資料保留天數（分析與匯出用；每日備份也會帶著）
+raw_keep_alarm_s = 600 # 每次警報保留前後各幾秒（預設 10 分鐘）
+cycle_retention_days = 180 # 生產循環逐筆資料保留天數；每日中位數永久保留
+backup_dir = "backups" # 每日自動備份（zip）的資料夾，相對於資料庫所在資料夾；填 "" 不備份
+backup_keep = 14       # 保留最近幾份（一份約 0.5–1 GB，見 README「磁碟用量」）
+backup_hour = 3        # 每天幾點備份；電腦那時沒開機，開機後超過 26 小時沒備份會立刻補做
+backup_mirror_dir = "" # 第二份備份：網路資料夾（NAS／檔案伺服器），例如 '\\NAS01\dtm_backup\R01'
+                       # 每份備份複製過去後會比對 SHA-256；網路斷線時本機備份照做，恢復後自動補複製
+before_restore_keep = 5 # 執行「還原精靈」前自動備份現況，保留最近幾份
+
+[notify]
+cooldown_s = 1800      # 同一警報、同一等級、同一通道的重發間隔（秒）；等級升高一定立即通知
+notify_clear = false   # 警報解除時是否也通知
+public_url = ""        # 儀表板網址，會附在 Email／Webhook 訊息裡，例如 http://10.1.2.3:8080
+proxy = ""             # 對外連線要經過代理時填寫，例如 http://10.0.0.1:8080
+min_level = 1          # Email、Webhook 的最低等級：1 = 注意以上，2 = 只發警戒
+email_enabled = false
+smtp_host = "mail.example.com"
+smtp_port = 25
+smtp_tls = false
+smtp_user = ""
+smtp_password = ""     # 可寫成 "env:DTM_SMTP_PASSWORD" 從環境變數讀取
+mail_from = "dtm@example.com"
+mail_to = ["maint@example.com"]
+webhook_url = ""       # 通用 Webhook（HTTP POST JSON）；要接 LINE、Teams、企業微信等，見下方 [notify.webhook_body] 範例
+quiet_hours = ""       # 夜間時段，例如 "22:00-07:00"：「注意」不即時發，併入每日摘要（警戒照發）
+summary_time = ""      # 每日摘要時間，例如 "07:30"；空白 = 不發。每天準時收到摘要＝系統還活著（心跳）
+summary_channels = ["email", "webhook"]   # 也可加 "sms"：只發一行摘要，當作每日心跳（計入每日上限）
+duty_file = ""         # 值班表 CSV：date,start,end,name,phone,email（規則 duty = true 時發給當班的人）
+edge_fallback_s = 300  # 有接中央時：平常由中央統一發；連不上中央超過 5 分鐘才由這台自己發「警戒」
+
+# Webhook 自訂（選填）：不填就送預設 JSON（text、level、robot、message…）
+# 範例：直接呼叫 LINE 官方帳號 Messaging API 推播給一個群組
+# webhook_url = "https://api.line.me/v2/bot/message/push"
+# [notify.webhook_headers]
+# Authorization = "env:DTM_LINE_BEARER"     # 環境變數內容填「Bearer 長期 token」
+# [notify.webhook_body]
+# to = "C1234567890abcdef..."              # 群組 ID（C 開頭）或個人 ID（U 開頭）
+# messages = [{ type = "text", text = "{text}" }]
+# 可用欄位：{text}{subject}{level}{robot}{site}{message}{axis}{kind}{time}{short}
+
+[notify.escalation]    # 逐級通報（搭配下面 [[notify.rules]] 的 stage = 2、3）
+enabled = true
+min_level = 2          # 警戒才逐級
+stage2_after_s = 1800  # 30 分鐘沒人確認 → 第 2 階段
+stage3_after_s = 7200  # 2 小時沒人確認 → 第 3 階段
+
+# 收件規則（選填）：沒有寫規則時，每個通道依自己的 min_level 與收件人發送
+# [[notify.rules]]
+# name = "設備課群組"
+# min_level = 1
+# channels = ["webhook", "email"]
+# stage = 1
+# [[notify.rules]]
+# name = "值班簡訊"
+# min_level = 2
+# channels = ["sms"]
+# stage = 2
+# duty = true          # 發給值班表上當班的人
+# [[notify.rules]]
+# name = "課長"
+# min_level = 2
+# channels = ["email"]
+# stage = 3
+# to = { email = ["manager@example.com"] }
+# [[notify.rules]]
+# name = "越南廠維修組"
+# sites = ["VN1"]
+# min_level = 1
+# channels = ["email"]
+# to = { email = ["maint-vn@example.com"] }
+# lang = "vi"          # 這條規則的通知用越南文（zh-TW、zh-CN、en、ja、ko、vi）；不寫 = 系統語言 [ui] lang
+
+# 收件人名單（選填，2.1）：每個人用自己的語言收通知（同一廠區有外籍同仁時用）。
+# 也可以在畫面「警報與通知 → 收件人」新增、修改；網頁上的名單優先於這裡。
+# groups：接收哪些通知，"default" = 預設收件人，其他填上面規則的 name；min_level = 2 只收警戒
+# [[notify.people]]
+# name = "王志明"
+# phone = "0912345678"
+# email = "wang@example.com"
+# lang = "zh-TW"
+# groups = ["default", "設備課群組"]
+# min_level = 1
+# [[notify.people]]
+# name = "Nguyễn Văn Hùng"
+# phone = "0912000103"
+# lang = "vi"
+# groups = ["值班簡訊"]
+# min_level = 2
+
+# ---- 手機簡訊
+[notify.sms]
+enabled = false
+provider = "modem"     # modem = 4G 簡訊數據機（不需網際網路）；http = 通用 HTTP 簡訊閘道（三竹、Twilio、中華電信等）
+to = ["0912345678"]
+min_level = 2          # 簡訊有成本，預設只發警戒
+max_per_day = 30       # 每日上限，避免異常時大量發送
+fallback = []          # 備援：主要的送不出去時改用，例如 provider = "modem"、fallback = ["http"]
+template = ""          # 簡訊模板；空白 = 預設。可用 {level}{robot}{site}{message}{time}{brand}
+
+[notify.sms.modem]     # 不需要網際網路：USB 4G 數據機插 SIM 卡，需 pip install pyserial
+port = "COM3"          # Linux 例如 /dev/ttyUSB2
+baud = 115200
+# cnmi = "AT+CNMI=2,1,0,2,0"   # 送達回報存在數據機裡；少數機型要改成 "AT+CNMI=2,1,0,1,0"
+# report_mem = ""              # 送達回報的存放位置，例如 "SR"；空白 = 數據機預設
+
+[notify.sms.report]    # 送達回報（2.1）：手機收到後畫面顯示「手機已接收」
+enabled = false
+timeout_min = 30       # 超過這個時間還沒回報 → 畫面標示「逾時未回報」
+poll_s = 60            # 4G 數據機：每隔多久讀一次回報
+# 通用 HTTP 閘道：簡訊商把結果回呼到 {public_url}/api/sms/report?key=…（DTM 主機要讓簡訊商連得到）
+key = ""               # 回呼網址的 key；空白 = 不開放回呼。建議 "env:DTM_SMS_REPORT_KEY"
+id_regex = ""          # 從發送回應抓訊息編號，例如三竹 'msgid=(\w+)'
+id_json = ""           # 或 JSON 欄位，例如 Twilio "sid"
+id_field = "msgid"     # 回呼內容的訊息編號欄位（Twilio 是 "MessageSid"）
+status_field = "status"   # 回呼內容的狀態欄位（三竹是 "statuscode"，Twilio 是 "MessageStatus"）
+delivered = "^(0|DELIVRD|DELIVERED|delivered)$"   # 代表已送達的值（正規表示式），依簡訊商文件調整
+
+[notify.sms.http]      # 通用 HTTP 簡訊閘道：網址與參數裡的 {phone}、{phone_e164}、{message} 會被替換
+method = "POST"        # GET 或 POST
+url = ""
+json = false           # true = 以 JSON 送出，false = 表單
+success = ""           # 回應內容要符合的正規表示式；空白 = 只看 HTTP 2xx
+basic_user = ""        # 需要 HTTP Basic 認證時填（例如 Twilio）
+basic_password = ""
+[notify.sms.http.params]
+# 依簡訊商文件填寫，下面是兩個常見範例（擇一，依合約文件為準）
+#
+# 範例一：三竹簡訊（台灣）
+#   url = "https://smsb2c.mitake.com.tw/b2c/mtk/SmSend?CharsetURL=UTF-8"
+#   success = "statuscode=[0124]"
+#   [notify.sms.http.params]
+#   username = "你的帳號"
+#   password = "env:DTM_SMS_PASSWORD"
+#   dstaddr = "{phone}"
+#   smbody = "{message}"
+#
+# 範例二：Twilio（國際）
+#   url = "https://api.twilio.com/2010-04-01/Accounts/ACxxxxxxxx/Messages.json"
+#   basic_user = "ACxxxxxxxx"
+#   basic_password = "env:DTM_TWILIO_TOKEN"
+#   [notify.sms.http.params]
+#   To = "{phone_e164}"
+#   From = "+1xxxxxxxxxx"
+#   Body = "{message}"
+
+# ---- 備品與作業包
+[workpack]
+catalog = "workpacks.r2000ic_165f.toml"   # 依機型建立；範本內料號來自公開資料，請以機台 Parts list 確認後再用
+notify_level = 1                          # 維護決策達此等級（1 = 注意）時，Email／Webhook 附上備品、人力、工時與工單連結
+
+[ui]
+# 系統語言：通知、警報訊息、報告、工單、指令列輸出用這個語言。
+# zh-TW 繁體中文｜zh-CN 简体中文｜en English｜ja 日本語｜ko 한국어｜vi Tiếng Việt
+# 儀表板每位使用者可在畫面上方的語言選單（地球圖示）各自切換，不受此設定限制。啟動時加 --lang 或設環境變數 DTM_LANG 可覆蓋。
+lang = "zh-TW"
+refresh_s = 0          # 中央／廠區畫面自動更新間隔（秒）；0 = 自動（中央 60、廠區 20）
+
+[privacy]
+export_anonymize = true   # 分析匯出預設匿名化（廠名、機器人、產線、操作人換成代號），匯出時仍可取消勾選
+
+[maint]
+currency = "TWD"       # 備品單價的幣別（ISO 4217），「保養與備品」估算材料費用；也可在「設定 → 一般」修改
+fx = "auto"            # 價格依觀看者的畫面語言換算成當地貨幣（繁中 TWD、簡中 CNY、英文 USD、日文 JPY、韓文 KRW、越南文 VND）
+                       # auto = 每 12 小時從網路下載匯率表（ExchangeRate-API，抓不到改用 currency-api；不送出任何資料）
+                       # manual = 用下面 [maint.fx_rates] 手動填的匯率（工廠不能連外時）；off = 不換算，一律顯示原幣別
+fx_refresh_h = 12
+# [maint.fx_rates]     # fx = "manual" 時：1 單位上面的幣別 = 多少目標幣別
+# USD = 0.031
+# CNY = 0.22
+# JPY = 4.7
+
+[service]              # 「保養與備品」頁底部的服務商資訊；也可在「設定 → 服務商」修改
+region = "auto"        # 原廠服務據點：auto = 依畫面語言；tw、cn、us、jp、kr、vn = 固定顯示這個地區
+contact_name = ""      # 原廠或代理商指派給貴廠的業務、服務工程師
+contact_phone = ""
+contact_email = ""
+customer_no = ""       # 客戶編號或維護合約號碼（報修時會被問）
+note = ""
+
+[web]
+host = "0.0.0.0"
+port = 8080
+live_window_s = 300
+write_password = ""    # 舊版共用寫入密碼（1.x）；建議改用下面的個人帳號。沒有帳號也沒有密碼時，儀表板一律唯讀，
+                       # 請在這台電腦本機開啟儀表板建立第一個管理員帳號
+                       # 不想把密碼寫在檔案裡：寫成 "env:DTM_WRITE_PASSWORD"，再設定同名的環境變數
+session_hours = 12     # 登入後多久要重新登入
+users_db = "users.sqlite3"   # 個人帳號（2.0）：python -m dtm -c config.toml user add wang --role engineer
+                             # 有帳號就改用帳號登入、依角色開放寫入；沒有帳號時沿用上面的共用密碼
+require_login = false  # true = 連看畫面都要登入
+tls_cert = ""          # HTTPS 憑證（PEM）；填了就改用 https://（向資訊單位申請內部 CA 簽發）
+tls_key = ""
+# 以下 2.1 新增，也可以在畫面右上角齒輪「設定」修改（網頁上的值優先；README 第十四節）
+idle_minutes = 30      # 操作員以上的帳號沒有操作多久自動登出；0 = 不自動登出（「檢視」帳號不受影響，看板電腦用）
+max_fails = 5          # 同一台電腦或同一個帳號 10 分鐘內密碼輸錯幾次就暫停登入
+lock_minutes = 10      # 暫停登入多久
+allow_ips = []         # 允許連線的電腦，例如 ["192.168.10.0/24", "10.1.2.3"]；空白 = 不限制；這台電腦本機一律可以
+pw_min_length = 8      # 密碼最少長度
+pw_require_mix = true  # 密碼要同時有英文字母與數字，不接受與帳號相同或 12345678 這類常見密碼
+pw_max_age_days = 0    # 密碼有效天數，到期登入時要先改；0 = 不限
+pw_change_first = true # 管理員建立或重設的密碼，對方第一次登入要先改
+
+# ---- Pro 程式層級診斷（選用）：短期「診斷優化期」提高取樣，把扭矩對到程式每一行與減速機每個角度
+# 使用方式見 README〈十三、Pro 程式層級診斷〉；資料來源：python -m dtm pro listen（控制器串流）或 pro import（CSV）
+[pro]
+data_dir = "data/pro"
+sample_hz = 100        # 診斷期取樣（範例 50–125）
+max_days = 7           # 診斷期最長天數，到期自動結束
+line_reg = 114         # 加註版程式把行號寫進 R[114]（python -m dtm pro instrument 產生）；不能跟上面 [registers] 重複
+torque = "torque"      # torque = 傳遞扭矩（扭矩指令或馬達電流換算，建議）；disturbance = 干擾扭矩（只能相對參考）
+torque_unit = "pct"    # pct = 減速機額定扭矩 T0 的百分比；nm = 牛頓米（需要各軸 rated_nm）；raw = 只做相對排名
+listen_port = 9750
+listen_allow = []      # 接受串流的控制器 IP；空白 = [source.fanuc_http] host（邊緣主機：各 [[robots]] host）；都沒有時只接受本機
+slack_q = 10           # 等待餘裕：取實際等待時間的第 10 百分位
+slack_margin_s = 0.3   # 再保留的安全裕度（秒）
+lwi_caution = 1.2      # 局部磨耗指數相對第一次掃描：注意
+lwi_alert = 1.4        # 警戒
+
+[pro.stop_weight]      # 停止事件相當於幾次「瞬間最大容許扭矩」事件（估計值；依實測峰值調整）
+estop = 0.02
+collision = 0.5
+controlled = 0.005
+
+[pro.cost]             # 改善驗證報告的成本換算（0 = 不換算）
+downtime_h = 8         # 一次換件的停機時數
+per_hour = 0           # 每小時停機損失
+spare = 0              # 備品費用
+labor = 0              # 人工費用
+
+# ---- 上傳中央（選填）：單機也可以直接上傳中央伺服器
+[central]
+url = ""               # 例如 "https://10.1.2.3:8090"；空白 = 不上傳
+token = ""             # 上傳金鑰，建議寫 "env:DTM_SYNC_TOKEN"
+interval_s = 60
+ca_file = ""           # 中央用內部 CA 憑證時填 CA 檔（PEM）
+clock_drift_s = 60     # 這台電腦跟中央的時間差超過幾秒就警告（0 = 不檢查）
+
+# ---- 看門狗：python -m dtm -c config.toml service install 會一起裝成服務
+[watchdog]
+stale_s = 120          # 狀態檔超過 2 分鐘沒更新 → 判定卡住，重啟服務
+data_stale_s = 900     # 15 分鐘沒有機器人資料 → 通知（機器人關機時重啟也沒用，所以只通知）
+max_restarts = 3       # 1 小時內最多自動重啟 3 次；超過就停止重啟、通知人處理
+service_name = "DTM"
+
+[watchdog.hw]          # 硬體看門狗（選用）：DTM 健康才餵；整台當機或程式救不回來時由硬體重開機
+type = "none"          # none｜linux（/dev/watchdog）｜command（工業電腦廠商工具）｜modbus（送心跳給 PLC）
+feed_s = 20
+max_reboots_day = 3    # 一天因看門狗重開超過 3 次，就改成一直餵、只通知人（防止無限重開）
+# feed_cmd = ["C:\\Vendor\\wdt.exe", "feed"]          # type = "command" 時
+# host = "192.168.0.50"                               # type = "modbus" 時：PLC 位址與心跳暫存器
+# addr = 300

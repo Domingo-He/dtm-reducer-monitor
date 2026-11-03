@@ -1,0 +1,53 @@
+# 模擬器設定：不接機器人也能完整測試。
+# 1) python -m dtm -c config.sim.toml simulate-history --days 180
+# 2) python -m dtm -c config.sim.toml run   → 瀏覽器開 http://localhost:8080
+
+[robot]
+name = "R-2000iC SIM-01"
+source = "sim"
+poll_hz = 5
+
+[source.sim]
+start_day = 180        # 接續 180 天歷史的劣化狀態
+diag_every_s = 90      # 每 90 秒插入一次診斷程式（現場通常每天或每班一次）
+seg_const_s = 4.0
+spike_every_s = 75     # 每 75 秒在 J3 製造一次 3 秒的扭矩尖峰，用來測試即時警報
+
+[axes]
+enabled = [2, 3, 4]
+
+# 模擬器的原始值與 Nm 換算已知，直接填入；現場請用 calibrate 指令求得
+[axis.2]
+name = "J2"
+reducer_type = "rv"
+k_nm_per_raw = 2.0
+rated_nm = 1000        # 示意值：請改成減速機型錄的額定扭矩
+grease_mass_g = 2500   # 示意值：請改成手冊的給脂量
+[axis.3]
+name = "J3"
+reducer_type = "rv"
+k_nm_per_raw = 1.5
+rated_nm = 1000
+grease_mass_g = 1800
+[axis.4]
+name = "J4"
+reducer_type = "gearbox"
+k_nm_per_raw = 1.0
+rated_nm = 400
+grease_mass_g = 600
+
+[life]
+hours_per_day = 20
+
+[workpack]             # 備品與作業包：維護決策發出建議時列出料號、工具、人力、工時、安全事項
+catalog = "workpacks.r2000ic_165f.toml"
+
+[storage]
+db = "dtm_sim.sqlite3"
+
+[ui]
+lang = "zh-TW"          # zh-TW｜zh-CN｜en｜ja｜ko｜vi；也可用 --lang 或 DTM_LANG 覆蓋
+
+[web]
+host = "127.0.0.1"     # 模擬器只給本機看，不會跳出防火牆詢問
+port = 8080

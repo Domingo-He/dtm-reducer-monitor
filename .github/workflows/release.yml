@@ -1,0 +1,73 @@
+# 建立 GitHub Release（發布）後自動執行：
+# 1. 用 git ls-files 打包原始碼 zip；2. 在 Windows 主機產生免安裝版（內含 Python）；
+# 3. 產生軟體物料清單 SBOM（CycloneDX，tools/sbom.py）；4. 為檔案建立建置來源證明（artifact attestation）；
+# 5. 附加到這個 Release。
+# 驗證：gh attestation verify 檔名.zip --repo 帳號/倉庫
+name: release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 打包原始碼（只含納入版本管理的檔案）
+        run: |
+          VER=$(python3 -c "import re;print(re.search(r'__version__ = \"(.+?)\"', open('dtm/__init__.py', encoding='utf-8').read()).group(1))")
+          echo "VER=$VER" >> "$GITHUB_ENV"
+          git ls-files -z | xargs -0 zip -q "torque_monitor_v${VER}.zip"
+          sha256sum "torque_monitor_v${VER}.zip"
+      - name: 產生 SBOM（CycloneDX 1.5）
+        run: SOURCE_DATE_EPOCH=$(git log -1 --format=%ct) python3 tools/sbom.py --out "dtm-${VER}-sbom.cdx.json"
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            torque_monitor_v${{ env.VER }}.zip
+            dtm-${{ env.VER }}-sbom.cdx.json
+      - name: 附加到 Release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" "torque_monitor_v${VER}.zip" "dtm-${VER}-sbom.cdx.json" --clobber
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-zip
+          path: |
+            torque_monitor_v${{ env.VER }}.zip
+            dtm-${{ env.VER }}-sbom.cdx.json
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 產生 Windows 免安裝版
+        shell: pwsh
+        run: |
+          python tools/build_windows.py --out dist
+          $zip = Get-ChildItem dist -Filter "DTM-*-win64.zip" | Select-Object -First 1
+          "WINZIP=dist/$($zip.Name)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: ${{ env.WINZIP }}
+      - name: 附加到 Release
+        if: github.event_name == 'release'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" "$env:WINZIP" --clobber
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-portable
+          path: ${{ env.WINZIP }}

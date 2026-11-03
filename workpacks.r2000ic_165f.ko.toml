@@ -1,0 +1,399 @@
+# 예비품 및 작업 패키지 카탈로그(한국어): workpacks.r2000ic_165f.toml에서 tools/workpack_l10n.py로 자동 생성.
+# 원본 파일을 수정한 뒤 다시 생성하십시오. 부품 번호는 공개 자료 기준이므로 주문 전 부품 목록과 명판으로 확인하십시오.
+
+[meta]
+robot_model = "R-2000iC/165F"
+manual = "R-2000iC 기구부 정비 매뉴얼 (B-83645EN)"
+updated = "2026-10-14"
+note = "부품 번호는 공개 자료 기준입니다. 주문 전 로봇의 부품 목록과 명판으로 확인하십시오"
+
+[toolsets.hand]
+name = "수공구"
+items = [
+  { name = "미터 육각 렌치 세트 (롱 타입 포함)", qty = 1, unit = "세트" },
+  { name = "소켓 렌치 세트 (연장대, 유니버설 조인트 포함)", qty = 1, unit = "세트" },
+  { name = "토크 렌치: 저토크용", spec = "범위는 매뉴얼의 볼트 체결 토크표에 따름", qty = 1, unit = "개" },
+  { name = "토크 렌치: 고토크용", spec = "범위는 매뉴얼의 볼트 체결 토크표에 따름", qty = 1, unit = "개" },
+  { name = "잭 볼트 (감속기 분리용)", spec = "규격은 잭 볼트용 나사 구멍에 따름", qty = 2, unit = "개" },
+  { name = "가이드 볼트 (고정 볼트와 같은 규격의 긴 볼트, 위치 맞춤용)", qty = 2, unit = "개" },
+  { name = "플라스틱 망치, 동봉", qty = 1, unit = "세트" },
+  { name = "스크레이퍼, 오일스톤 (기존 실런트와 버 제거)", qty = 1, unit = "세트" },
+]
+
+[toolsets.lifting]
+name = "인양 및 지지"
+items = [
+  { name = "천장 크레인 또는 이동식 갠트리", spec = "정격 하중 ≥ 인양물 중량의 2배 (중량은 매뉴얼 참조)", qty = 1, unit = "대" },
+  { name = "M10 아이볼트", spec = "매뉴얼에 지정된 J3 암 지지 방법", qty = 2, unit = "개" },
+  { name = "슬링 벨트", spec = "정격 하중은 인양 계획에 맞는 것", qty = 2, unit = "개" },
+  { name = "체인 블록 (미세 위치 맞춤용)", qty = 1, unit = "대" },
+  { name = "지지대 또는 받침목", qty = 1, unit = "세트" },
+]
+
+[toolsets.grease]
+name = "급지 및 시료 채취"
+items = [
+  { name = "수동 그리스 건 (압력계 부착)", spec = "매뉴얼에서 수동 펌프 사용을 요구", qty = 1, unit = "개" },
+  { name = "그리스 니플 어댑터", qty = 1, unit = "세트" },
+  { name = "폐그리스 회수 봉투 또는 용기", qty = 2, unit = "개" },
+  { name = "전자 저울 (주입량과 배출량 측정)", qty = 1, unit = "대" },
+  { name = "철분 시료병 (폐그리스 중간부, 24시간 후 잔류분)", qty = 2, unit = "개" },
+]
+
+[toolsets.check]
+name = "점검 및 교정"
+items = [
+  { name = "티치 펜던트", qty = 1, unit = "대" },
+  { name = "USB 메모리 (컨트롤러 백업)", qty = 1, unit = "개" },
+  { name = "멀티미터", qty = 1, unit = "대" },
+  { name = "손전등, 점검 거울", qty = 1, unit = "세트" },
+  { name = "마커, 케이블 태그 (분리 전 표시)", qty = 1, unit = "세트" },
+  { name = "마스터링 지그", spec = "현장에서 사용하는 마스터링 방식에 따름", qty = 1, unit = "세트" },
+]
+
+[toolsets.ppe]
+name = "보호구 및 잠금"
+items = [
+  { name = "안전모, 안전화", qty = 1, unit = "1인당" },
+  { name = "내유 장갑, 내열 장갑", qty = 1, unit = "1인당" },
+  { name = "보안경", qty = 1, unit = "1인당" },
+  { name = "잠금·표지(LOTO) 키트 (개인 자물쇠, 표지)", qty = 1, unit = "1인당" },
+  { name = "세척 용제, 무진 걸레, 흡유포", qty = 1, unit = "식" },
+]
+
+[[pack]]
+id = "R2000iC165F-J3-reducer"
+title = "J3 감속기 교체"
+comp = "reducer"
+axes = [3]
+crew = 3
+hours_min = 10
+hours_max = 16
+hours_note = "참고 추정치이며 제조사 표준 공수가 아닙니다. 첫 작업은 2개 근무조를 배정할 것을 권장합니다. 실런트 경화 시간이 필요하면 별도로 더하십시오."
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "작업 책임자", n = 1, duty = "로봇 정비 기술자: 잠금·표지, 모터 탈착, 마스터링, 시운전" },
+  { role = "기계 기술자", n = 1, duty = "감속기 탈착, 접합면 청소, 볼트 체결 토크, 급지" },
+  { role = "줄걸이 작업자", n = 1, duty = "줄걸이 관련 자격 보유자: 크레인 조작과 신호, J3 암 지지" },
+]
+safety = [
+  "작업 전 TBM(툴박스 미팅) 실시: 역할 분담, 인양 계획, 비상 정지 위치 확인",
+  "컨트롤러 전원을 차단하고 잠금·표지 실시. 펜스 안에 들어가는 모든 사람이 자신의 자물쇠를 건다",
+  "J3 모터를 분리하거나 J3 브레이크를 해제하기 전에 M10 아이볼트 ×2와 슬링으로 J3 암을 매달아 하중을 받게 할 것. 지지하지 않으면 암이 떨어진다",
+  "인양은 자격자가 신호한다. 인양물 아래와 이동 경로에 사람이 서지 않는다. 인양 기구의 정격 하중 확인",
+  "정지 직후의 모터와 감속기는 고온일 수 있음: 내열 장갑을 착용하거나 식을 때까지 기다린다",
+  "배지구를 열 때 그리스가 갑자기 분출될 수 있음: 먼저 회수 봉투를 씌운다. 급지는 수동 펌프와 지정 그리스만 사용",
+  "통전하여 조그 운전이 필요할 때(잔압 해제, 마스터링): 인원은 펜스 밖으로 나가거나 티치 펜던트 인에이블 스위치를 잡고, 오버라이드 10% 이하",
+  "용제와 실런트는 환기가 되는 곳에서 장갑을 끼고 사용. 폐그리스와 기름 묻은 폐기물은 사내 규정에 따라 처리",
+  "고소 작업 시 적합한 작업대를 사용하고 규정에 따라 안전대를 착용",
+  "완료 전 공구 수량을 확인하여 기구 안에 남은 것이 없는지 확인. 잠금·표지는 건 본인이 해제",
+]
+steps = [
+  { name = "매뉴얼에 지정된 분해 자세로 이동, 전원 차단 및 잠금, TBM (예비품 대조와 컨트롤러 백업은 정지 전에 완료)", crew = 2, hours = 1.0 },
+  { name = "J3 암 지지 (아이볼트 + 슬링으로 하중 지지). 폐그리스를 배출하고 앞부분은 버린 뒤 중간부를 철분 시료로 채취", crew = 3, hours = 1.0 },
+  { name = "J3 모터 케이블에 표시 후 분리하고 J3 모터를 분리", crew = 2, hours = 0.5 },
+  { name = "고정 볼트를 풀고 J3 암 조립체를 들어 지지대에 올린 뒤 기존 감속기를 밀어낸다", crew = 3, hours = 2.0 },
+  { name = "접합면 청소. 위치결정 핀, 나사 구멍, 모터 측 기어 치면 점검", crew = 2, hours = 1.0 },
+  { name = "새 감속기 장착: O링, 실런트, 대각선 순서로 단계적으로 규정 토크까지 체결", crew = 2, hours = 2.0 },
+  { name = "J3 암을 다시 들어 위치를 맞추고 체결. J3 모터를 장착하고 결선. 브레이크가 유지하는 것을 확인한 후 인양 기구 제거 (통전 전에 반드시 제거)", crew = 3, hours = 1.5 },
+  { name = "급지 (배지구를 열고 새 그리스가 나올 때까지 주입) 후 잔압 해제", crew = 2, hours = 1.0 },
+  { name = "펄스 코더 리셋과 J3 마스터링. 기존 프로그램 포인트로 확인", crew = 2, hours = 1.5 },
+  { name = "시운전, 누유 및 이상음 점검. DTM_DIAG 실행 후 이벤트 등록", crew = 2, hours = 1.0 },
+]
+
+[[pack.parts]]
+name = "J3 감속기 (RV)"
+pn = "A97L-0218-0989#218"
+qty = 1
+unit = "대"
+stock = 0
+verified = false
+main = true
+source = "부품 판매처 표기상 R-2000iC/165F J3용. 다른 가반 중량 모델은 끝번호가 다를 수 있음"
+
+[[pack.parts]]
+name = "그리스 VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "통"
+grease = true
+verified = false
+source = "FANUC 급지 자료: R-2000iC 기구부용 A98L-0040-0174"
+
+[[pack.parts]]
+name = "감속기 O링 및 실 부품"
+pn = "부품 목록 참조"
+qty = 1
+unit = "세트"
+verified = false
+
+[[pack.parts]]
+name = "J3 모터 O링"
+pn = "부품 목록 참조"
+qty = 1
+unit = "개"
+verified = false
+
+[[pack.parts]]
+name = "급지구/배지구 실 볼트"
+pn = "부품 목록 참조"
+qty = 2
+unit = "개"
+verified = false
+note = "실 와셔가 손상되었거나 실런트가 열화되었으면 교체"
+
+[[pack.parts]]
+name = "감속기 및 J3 암 고정 볼트"
+pn = "부품 목록 참조"
+qty = 1
+unit = "세트"
+verified = false
+note = "분리한 볼트가 변형되었거나 나사산이 손상되었으면 교체"
+
+[[pack.parts]]
+name = "나사 고정제"
+pn = "매뉴얼 지정품"
+qty = 1
+unit = "병"
+verified = false
+
+[[pack.parts]]
+name = "액상 개스킷"
+pn = "매뉴얼 지정품"
+qty = 1
+unit = "개"
+verified = false
+
+[[pack]]
+id = "R2000iC165F-J2-reducer"
+title = "J2 감속기 교체"
+comp = "reducer"
+axes = [2]
+crew = 4
+hours_note = "J2 교체는 밸런서와 상완 지지가 필요하므로 공수와 절차는 매뉴얼에 따라 추가하십시오"
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "작업 책임자", n = 1, duty = "로봇 정비 기술자: 잠금·표지, 밸런서 처치, 마스터링" },
+  { role = "기계 기술자", n = 2, duty = "감속기와 밸런서 탈착, 볼트 체결 토크, 급지" },
+  { role = "줄걸이 작업자", n = 1, duty = "줄걸이 관련 자격 보유자: 크레인 조작과 신호" },
+]
+safety = [
+  "J2 교체에는 밸런서가 포함됨: 매뉴얼에 따라 밸런서를 고정한 후에 분해. 밸런서 내부에는 스프링 예압이 있음",
+  "J2 모터를 분리하거나 브레이크를 해제하기 전에 J2 암과 그 위의 기구를 지지할 것. 지지하지 않으면 암이 떨어진다",
+  "컨트롤러 전원을 차단하고 잠금·표지 실시. 인양은 자격자가 신호",
+]
+steps = []
+
+[[pack.parts]]
+name = "J2 감속기 (RV)"
+pn = "A97L-0218-0988#249"
+qty = 1
+unit = "대"
+stock = 0
+verified = false
+source = "부품 판매처 표기상 R-2000iC/165F J2용"
+main = true
+
+[[pack.parts]]
+name = "그리스 VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "통"
+grease = true
+verified = false
+source = "FANUC 급지 자료: R-2000iC 기구부용 A98L-0040-0174"
+
+[[pack.parts]]
+name = "감속기 O링, 실 부품, 실 볼트"
+pn = "부품 목록 참조"
+qty = 1
+unit = "세트"
+verified = false
+
+[[pack]]
+id = "R2000iC165F-J23-motor"
+title = "서보 모터 교체 (J2/J3)"
+comp = "motor"
+axes = [2, 3]
+crew = 3
+hours_min = 3
+hours_max = 5
+hours_note = "참고 추정치. 모터 분리 후에는 펄스 코더 리셋과 마스터링이 필요"
+toolsets = ["hand", "lifting", "check", "ppe"]
+roles = [
+  { role = "작업 책임자", n = 1, duty = "로봇 정비 기술자: 잠금·표지, 모터 탈착, 펄스 코더 리셋, 마스터링" },
+  { role = "기계 기술자", n = 1, duty = "볼트와 O링 탈착, 그리스 보충" },
+  { role = "줄걸이 작업자", n = 1, duty = "줄걸이 관련 자격 보유자: 모터 분리 전 암 지지" },
+]
+safety = [
+  "컨트롤러 전원을 차단하고 잠금·표지 실시. 케이블 분리 전 표시",
+  "모터를 분리하기 전에 해당 축의 암을 지지하여 하중을 받게 할 것. 서보 모터나 브레이크를 분리하면 지지되지 않은 암은 떨어진다",
+  "정지 직후의 모터는 고온일 수 있음: 내열 장갑을 착용하거나 식을 때까지 기다린다",
+  "통전하여 조그 운전할 때는 인원이 펜스 밖으로 나가거나 티치 펜던트 인에이블 스위치를 잡고, 오버라이드 10% 이하",
+]
+steps = [
+  { name = "준비: 모터 형식을 명판과 대조, 컨트롤러 백업, 전원 차단 및 잠금", crew = 2, hours = 0.5 },
+  { name = "암 지지 (아이볼트 + 슬링으로 하중 받기)", crew = 3, hours = 0.5 },
+  { name = "케이블에 표시 후 분리하고 모터 분리", crew = 2, hours = 0.5 },
+  { name = "기어와 감속기 입력부 점검. 새 모터(새 O링) 장착 후 결선. 브레이크가 유지하는 것을 확인한 후 인양 기구 제거", crew = 3, hours = 0.75 },
+  { name = "펄스 코더 리셋과 마스터링. 기존 프로그램 포인트로 확인", crew = 2, hours = 1.0 },
+  { name = "시운전, 온도 및 이상음 점검. DTM_DIAG 실행 후 이벤트 등록", crew = 2, hours = 0.75 },
+]
+
+[[pack.parts]]
+name = "서보 모터 αiSR30/3000"
+pn = "A06B-2041-B605#0042"
+qty = 1
+unit = "대"
+stock = 0
+verified = false
+source = "FANUC R-2000iC 카탈로그(A-97606-0293E)에 J2, J3 모터로 기재"
+note = "로봇의 모터 명판을 우선"
+main = true
+
+[[pack.parts]]
+name = "모터 O링"
+pn = "부품 목록 참조"
+qty = 1
+unit = "개"
+verified = false
+
+[[pack.parts]]
+name = "모터 고정 볼트"
+pn = "부품 목록 참조"
+qty = 1
+unit = "세트"
+verified = false
+
+[[pack]]
+id = "R2000iC165F-J23-grease"
+title = "감속기 그리스 교환 (J2/J3)"
+comp = "grease"
+axes = [2, 3]
+crew = 2
+hours_min = 2
+hours_max = 3
+hours_note = "참고 추정치, 축당. 급지량과 잔압 해제 시간은 매뉴얼에 따름"
+toolsets = ["grease", "check", "ppe"]
+roles = [
+  { role = "작업 책임자", n = 1, duty = "로봇 정비 기술자: 잠금·표지, 급지 자세로 조그 이동, 잔압 해제" },
+  { role = "급지 담당자", n = 1, duty = "실 볼트 개폐, 급지, 계량, 시료 채취" },
+]
+safety = [
+  "실 볼트 개폐 시 전원 차단 및 잠금. 조그 운전이 필요하면 인원은 펜스 밖으로",
+  "배지구를 열 때 그리스가 갑자기 분출될 수 있음: 먼저 회수 봉투를 씌운다",
+  "수동 펌프와 지정 그리스만 사용. 급지 중에는 배지구를 반드시 열어 내압으로 오일 실이 손상되지 않게 한다",
+]
+steps = [
+  { name = "급지 자세로 조그 이동 후 전원 차단 및 잠금", crew = 2, hours = 0.5 },
+  { name = "배지구를 열고 봉투를 씌운다. 배출된 폐그리스는 앞부분(배지구 부근에 정체된 그리스)을 버리고 중간부 약 5 g을 병에 담아 철분 시료로 한다 (DTM 시료 유형: 교환 배출(중간부))", crew = 2, hours = 0.25 },
+  { name = "수동 펌프로 급지구에서 주입하여 배지구로 새 그리스가 나올 때까지 계속. 주입량과 배출량 기록", crew = 2, hours = 1.0 },
+  { name = "배지구를 연 상태에서 매뉴얼에 따라 운전하여 잔압 해제", crew = 2, hours = 0.5 },
+  { name = "실 볼트 재장착 및 청소. DTM에 그리스 교환과 철분 등록", crew = 1, hours = 0.25 },
+]
+
+[[pack.parts]]
+name = "그리스 VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "통"
+grease = true
+verified = false
+source = "FANUC 급지 자료: R-2000iC 기구부용 A98L-0040-0174"
+
+[[pack.parts]]
+name = "실 볼트 (또는 실 와셔)"
+pn = "부품 목록 참조"
+qty = 2
+unit = "개"
+verified = false
+note = "실 와셔가 손상되었으면 교체"
+
+[[pack]]
+id = "R2000iC165F-E1-gearbox"
+title = "E1 주행축 감속기(기어박스) 교체"
+comp = "gearbox"
+axes = [7]
+crew = 3
+hours_min = 4
+hours_max = 8
+hours_note = "참고 추정치. 주행축 제조사 매뉴얼에 따름. 교체 후 피니언과 랙의 백래시 확인과 마스터링 필요"
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "작업 책임자", n = 1, duty = "로봇 정비 기술자: 잠금·표지, 주행축 고정, 마스터링" },
+  { role = "기계 기술자", n = 1, duty = "모터와 감속기 탈착, 랙 맞물림 조정, 볼트 체결 토크" },
+  { role = "줄걸이 작업자", n = 1, duty = "줄걸이 관련 자격 보유자: 감속기 인양" },
+]
+safety = [
+  "컨트롤러 전원을 차단하고 잠금·표지 실시. 주행축 슬라이더는 스토퍼나 쐐기로 고정해 미끄러지지 않게 한다",
+  "레일 양 끝과 슬라이더 주변에 경계 구역을 설정하고 주행 범위 출입 금지",
+  "인양은 자격자가 신호한다. 감속기 무게를 매뉴얼로 확인하고 인양 기구 하중 확인",
+]
+steps = [
+  { name = "준비: 감속기 형식 확인, 컨트롤러 백업, 전원 차단 및 잠금, 슬라이더 고정", crew = 2, hours = 0.75 },
+  { name = "모터 분리 (케이블 표시), 감속기와 피니언 분리", crew = 3, hours = 1.5 },
+  { name = "랙 마모와 이물질 점검. 새 감속기와 피니언 장착 후 백래시 조정", crew = 3, hours = 2.0 },
+  { name = "모터 재장착, 배선, 급지. 마스터링 후 기존 프로그램 포인트로 확인", crew = 2, hours = 1.25 },
+  { name = "저속 왕복 시운전, 이상음 및 온도 점검. DTM_DIAG(E1 구간) 실행 후 이벤트 등록", crew = 2, hours = 0.75 },
+]
+
+[[pack.parts]]
+name = "E1 주행축 감속기(기어박스)"
+pn = "주행축 부품 목록에 따름"
+qty = 1
+unit = "대"
+stock = 0
+verified = false
+note = "주행축 명판과 제조사 매뉴얼 기준"
+main = true
+
+[[pack.parts]]
+name = "E1 피니언 (랙 맞물림 측)"
+pn = "주행축 부품 목록에 따름"
+qty = 1
+unit = "개"
+verified = false
+note = "피니언이 마모되었으면 함께 교체"
+
+[[pack.parts]]
+name = "기어박스와 랙용 그리스"
+pn = "주행축 매뉴얼 지정에 따름"
+qty = 1
+unit = "식"
+grease = true
+verified = false
+
+[[pack]]
+id = "R2000iC165F-E1-grease"
+title = "E1 주행축 급지 (기어박스, 랙과 피니언)"
+comp = "grease"
+axes = [7]
+crew = 2
+hours_min = 1
+hours_max = 2
+hours_note = "참고 추정치. 급지 주기와 급지량은 주행축 제조사 매뉴얼에 따름 (자동 급지기는 잔량과 토출 점검)"
+toolsets = ["grease", "check", "ppe"]
+roles = [
+  { role = "작업 책임자", n = 1, duty = "로봇 정비 기술자: 잠금·표지, 주행축 저속 왕복" },
+  { role = "급지 담당자", n = 1, duty = "기어박스 급지, 랙 청소 및 도포, 자동 급지기 점검" },
+]
+safety = [
+  "급지와 랙 청소 시 전원 차단 및 잠금 후 슬라이더 고정",
+  "그리스 분포를 위해 왕복 운전이 필요할 때는 인원이 주행 범위 밖으로 나가고 오버라이드 10% 이하",
+]
+steps = [
+  { name = "전원 차단 및 잠금, 슬라이더 고정. 랙의 폐그리스와 분진을 제거하고 치면 육안 점검", crew = 2, hours = 0.5 },
+  { name = "기어박스는 매뉴얼에 따라 급지 (배지구 개방). 랙과 피니언에 도포하거나 자동 급지기 보충", crew = 2, hours = 0.5 },
+  { name = "저속으로 전 행정을 여러 번 왕복해 그리스를 분포시킴. DTM에 그리스 교환 등록", crew = 2, hours = 0.5 },
+]
+
+[[pack.parts]]
+name = "기어박스와 랙용 그리스"
+pn = "주행축 매뉴얼 지정에 따름"
+qty = 1
+unit = "식"
+grease = true
+verified = false
+
+# [[pack]]
+# [[pack.parts]]

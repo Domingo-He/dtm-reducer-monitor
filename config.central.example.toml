@@ -1,0 +1,107 @@
+# DTM 中央伺服器設定範本（[system] role = "central"）
+# 用法：複製成 config.central.toml，修改後執行
+#   python -m dtm -c config.central.toml run
+# 中央不讀機器人，只接收各廠邊緣主機（或單機）上傳的資料，提供：全廠總覽、廠區詳情、機器人詳情、風險與預測、
+# 警報與通知中心、保養排程與備品、機群壽命統計、系統健康 8 個畫面。通知只由中央統一發送。
+#
+# 只想先看畫面：python -m dtm -c config.central.example.toml demo   （或雙擊「中央演示.bat」）
+#   會產生 6 廠 160 台的「演示資料」（畫面右上角有標示），不會連任何機器人、不會真的發通知。
+
+[system]
+role = "central"
+site_name = "中央監控"
+
+[web]
+host = "0.0.0.0"
+port = 8090
+users_db = "users.sqlite3"     # 個人帳號：python -m dtm -c config.central.toml user add wang --role engineer
+require_login = false          # true = 連看畫面都要登入
+tls_cert = ""                  # 建議用 HTTPS：向資訊單位申請公司內部 CA 簽發的憑證（PEM）
+tls_key = ""
+
+[central]
+db = "central.sqlite3"
+token = "env:DTM_SYNC_TOKEN"   # 各邊緣主機共用的上傳金鑰；或在 [central.tokens] 每廠一組
+edge_timeout_s = 300           # 邊緣主機超過 5 分鐘沒有上傳 → 系統警報（斷電、斷網、程式停止）
+notify_max_age_s = 3600        # 斷線恢復後補傳的舊警報只存不發
+rules_every_s = 3600           # 每小時用整個機群的更換紀錄重算壽命模型，下發給邊緣
+
+[central.tokens]               # 每廠一組金鑰（建議）；沒列到的廠區用上面的 token
+# P1 = "env:DTM_EDGE_P1"
+# P3 = "env:DTM_EDGE_P3"
+
+[central.sites]                # 廠區代碼 → 名稱（畫面與通知規則用）
+P1 = { name = "一廠", country = "TW" }
+P2 = { name = "二廠", country = "TW" }
+P3 = { name = "三廠", country = "TW" }
+P4 = { name = "四廠", country = "TW" }
+P5 = { name = "五廠", country = "TW" }
+P6 = { name = "六廠", country = "TW" }
+
+# 這個機型的 J4–J6 是齒輪箱（壽命統計、備品需求依此分類）
+[axis.4]
+reducer_type = "gearbox"
+[axis.5]
+reducer_type = "gearbox"
+[axis.6]
+reducer_type = "gearbox"
+
+[workpack]
+catalog = "workpacks.r2000ic_165f.toml"   # 作業包（工單）目錄；料號請以機台 Parts list 確認
+
+[life]
+hours_per_day = 20
+weibull_min_failures = 3
+
+# ---- 通知（只有中央發；邊緣主機連不上中央超過 edge_fallback_s 才自己發警戒）
+[notify]
+public_url = "http://10.1.2.3:8090"   # 中央網址，附在訊息裡
+quiet_hours = "22:00-07:00"            # 夜間「注意」不即時發，併入每日摘要（警戒照發）
+summary_time = "07:30"
+summary_channels = ["email", "webhook"]
+duty_file = ""                         # 值班表 CSV：date,start,end,name,phone,email
+duty_default_phones = []
+email_enabled = false                  # 填好郵件主機後改成 true
+smtp_host = "mail.example.com"
+mail_from = "dtm@example.com"
+mail_to = ["maint@example.com"]
+webhook_url = ""                       # 群組通知（LINE、Teams 等）用 Webhook 接，範例見 config.example.toml
+
+[notify.escalation]
+enabled = true
+min_level = 2
+stage2_after_s = 1800                  # 30 分鐘沒人確認 → 第 2 階段
+stage3_after_s = 7200                  # 2 小時沒人確認 → 第 3 階段
+
+[notify.sms]
+enabled = false                        # 接好 4G 簡訊數據機（或填好 HTTP 簡訊閘道）後改成 true
+provider = "modem"                     # modem = 4G 簡訊數據機；http = 通用 HTTP 簡訊閘道
+fallback = []                          # 例如 ["http"]：數據機送不出去時改用 HTTP 閘道
+to = []
+min_level = 2
+
+[notify.sms.modem]
+port = "COM3"
+
+[[notify.rules]]
+name = "設備課群組"
+sites = ["*"]
+min_level = 1
+channels = ["webhook", "email"]
+stage = 1
+
+[[notify.rules]]
+name = "值班簡訊"
+sites = ["*"]
+min_level = 2
+channels = ["sms"]
+stage = 2
+duty = true
+
+[[notify.rules]]
+name = "課長"
+sites = ["*"]
+min_level = 2
+channels = ["email"]
+stage = 3
+to = { email = ["manager@example.com"] }

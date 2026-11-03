@@ -1,0 +1,400 @@
+# Spare parts and work package catalog (English): generated from workpacks.r2000ic_165f.toml by tools/workpack_l10n.py.
+# Edit the source file and regenerate. Part numbers come from public sources; verify against the
+# robot's parts list and nameplates before ordering. Hours are estimates, not FANUC standard times.
+
+[meta]
+robot_model = "R-2000iC/165F"
+manual = "R-2000iC Mechanical Unit Maintenance Manual (B-83645EN)"
+updated = "2026-10-14"
+note = "Part numbers come from public sources; verify against the robot's parts list and nameplates before ordering"
+
+[toolsets.hand]
+name = "Hand tools"
+items = [
+  { name = "Metric hex key set (including long-arm keys)", qty = 1, unit = "set" },
+  { name = "Socket set (with extensions and universal joints)", qty = 1, unit = "set" },
+  { name = "Torque wrench, low range", spec = "Range per the bolt torque table in the manual", qty = 1, unit = "pc" },
+  { name = "Torque wrench, high range", spec = "Range per the bolt torque table in the manual", qty = 1, unit = "pc" },
+  { name = "Jacking screws (to separate the reducer)", spec = "Size per the jacking holes", qty = 2, unit = "pc" },
+  { name = "Guide studs (long studs of the same thread as the mounting bolts, for alignment)", qty = 2, unit = "pc" },
+  { name = "Plastic mallet, brass drift", qty = 1, unit = "set" },
+  { name = "Scraper and oilstone (to remove old sealant and burrs)", qty = 1, unit = "set" },
+]
+
+[toolsets.lifting]
+name = "Lifting and support"
+items = [
+  { name = "Overhead crane or mobile gantry", spec = "Rated load ≥ 2× the weight lifted (weights per the manual)", qty = 1, unit = "unit" },
+  { name = "M10 eyebolts", spec = "J3 arm support method specified in the manual", qty = 2, unit = "pc" },
+  { name = "Lifting slings", spec = "Rated load to suit the lifting plan", qty = 2, unit = "pc" },
+  { name = "Chain hoist (for fine alignment)", qty = 1, unit = "unit" },
+  { name = "Support stand or cribbing", qty = 1, unit = "set" },
+]
+
+[toolsets.grease]
+name = "Greasing and sampling"
+items = [
+  { name = "Manual grease gun (with pressure gauge)", spec = "The manual requires a manual pump", qty = 1, unit = "pc" },
+  { name = "Grease nipple adapters", qty = 1, unit = "set" },
+  { name = "Waste grease bags or containers", qty = 2, unit = "pc" },
+  { name = "Electronic scale (to weigh grease injected and drained)", qty = 1, unit = "unit" },
+  { name = "Iron debris sample bottles (middle portion of old grease, residual after 24 h)", qty = 2, unit = "pc" },
+]
+
+[toolsets.check]
+name = "Inspection and calibration"
+items = [
+  { name = "Teach pendant", qty = 1, unit = "unit" },
+  { name = "USB drive (controller backup)", qty = 1, unit = "pc" },
+  { name = "Multimeter", qty = 1, unit = "unit" },
+  { name = "Flashlight, inspection mirror", qty = 1, unit = "set" },
+  { name = "Marker pen and cable tags (mark before disconnecting)", qty = 1, unit = "set" },
+  { name = "Mastering tools", spec = "Per the mastering method used on site", qty = 1, unit = "set" },
+]
+
+[toolsets.ppe]
+name = "PPE and lockout"
+items = [
+  { name = "Hard hat, safety shoes", qty = 1, unit = "per person" },
+  { name = "Oil-resistant gloves, heat-resistant gloves", qty = 1, unit = "per person" },
+  { name = "Safety glasses", qty = 1, unit = "per person" },
+  { name = "Lockout/tagout kit (personal lock, tag)", qty = 1, unit = "per person" },
+  { name = "Cleaning solvent, lint-free wipes, oil absorbent pads", qty = 1, unit = "lot" },
+]
+
+[[pack]]
+id = "R2000iC165F-J3-reducer"
+title = "J3 reducer replacement"
+comp = "reducer"
+axes = [3]
+crew = 3
+hours_min = 10
+hours_max = 16
+hours_note = "Estimate only, not FANUC standard hours; plan two shifts for the first job. Add sealant curing time if required."
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "Job lead", n = 1, duty = "Robot service technician: lockout/tagout, motor removal and installation, mastering, test run" },
+  { role = "Mechanical technician", n = 1, duty = "Reducer removal and installation, mating surface cleaning, bolt torque, greasing" },
+  { role = "Rigger", n = 1, duty = "Certified for rigging: crane operation and signaling, J3 arm support" },
+]
+safety = [
+  "Hold a toolbox meeting before starting: confirm roles, the lifting plan and emergency stop locations",
+  "Power off the controller and apply lockout/tagout; everyone entering the fence applies their own lock",
+  "Before removing the J3 motor or releasing the J3 brake, support the J3 arm with 2× M10 eyebolts and slings under load; an unsupported arm will fall",
+  "Lifting is directed by a certified person; nobody under the load or in its path; check the rated load of the lifting gear",
+  "Motors and reducers may be hot right after stopping: wear heat-resistant gloves or let them cool",
+  "Grease may spurt out when the outlet is opened: fit a collection bag first; grease only with a manual pump and the specified grease",
+  "When power is needed for jogging (pressure release, mastering): everyone leaves the fence or holds the teach pendant enabling switch, override 10% or less",
+  "Use solvents and sealants in a ventilated area with gloves; dispose of waste grease and oily waste per site rules",
+  "For work at height use an approved platform and wear a harness as required",
+  "Count tools before finishing and make sure none are left in the mechanism; each lock and tag is removed by the person who applied it",
+]
+steps = [
+  { name = "Move to the removal posture specified in the manual, power off and lock out, toolbox meeting (check spare parts and back up the controller before the stop)", crew = 2, hours = 1.0 },
+  { name = "Support the J3 arm (eyebolts + slings under load); drain the old grease, discard the first portion and take the middle portion as the iron debris sample", crew = 3, hours = 1.0 },
+  { name = "Mark and disconnect the J3 motor cables, remove the J3 motor", crew = 2, hours = 0.5 },
+  { name = "Remove the mounting bolts, lift the J3 arm assembly onto the support stand, jack out the old reducer", crew = 3, hours = 2.0 },
+  { name = "Clean the mating surfaces; inspect dowel pins, tapped holes and the motor-side gear teeth", crew = 2, hours = 1.0 },
+  { name = "Install the new reducer: O-rings, sealant, tighten in a cross pattern in stages to the specified torque", crew = 2, hours = 2.0 },
+  { name = "Lift the J3 arm back, align and bolt; refit and reconnect the J3 motor; remove the rigging once the brake holds (must be removed before power-on)", crew = 3, hours = 1.5 },
+  { name = "Grease (outlet open, inject until new grease comes out) and release residual pressure", crew = 2, hours = 1.0 },
+  { name = "Pulse coder reset and J3 mastering; confirm with existing program points", crew = 2, hours = 1.5 },
+  { name = "Test run, check for leaks and abnormal noise; run DTM_DIAG and record the event", crew = 2, hours = 1.0 },
+]
+
+[[pack.parts]]
+name = "J3 reducer (RV)"
+pn = "A97L-0218-0989#218"
+qty = 1
+unit = "unit"
+stock = 0
+verified = false
+main = true
+source = "Listed by a parts dealer as R-2000iC/165F J3; the suffix may differ for other payload variants"
+
+[[pack.parts]]
+name = "Grease VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "pail"
+grease = true
+verified = false
+source = "FANUC greasing data: A98L-0040-0174 for the R-2000iC mechanical unit"
+
+[[pack.parts]]
+name = "Reducer O-rings and seals"
+pn = "Per parts list"
+qty = 1
+unit = "set"
+verified = false
+
+[[pack.parts]]
+name = "J3 motor O-ring"
+pn = "Per parts list"
+qty = 1
+unit = "pc"
+verified = false
+
+[[pack.parts]]
+name = "Grease inlet/outlet seal bolts"
+pn = "Per parts list"
+qty = 2
+unit = "pc"
+verified = false
+note = "Replace if the seal washer is damaged or the sealant has failed"
+
+[[pack.parts]]
+name = "Reducer and J3 arm mounting bolts"
+pn = "Per parts list"
+qty = 1
+unit = "set"
+verified = false
+note = "Replace removed bolts that are deformed or have damaged threads"
+
+[[pack.parts]]
+name = "Threadlocker"
+pn = "As specified in the manual"
+qty = 1
+unit = "bottle"
+verified = false
+
+[[pack.parts]]
+name = "Flange sealant"
+pn = "As specified in the manual"
+qty = 1
+unit = "pc"
+verified = false
+
+[[pack]]
+id = "R2000iC165F-J2-reducer"
+title = "J2 reducer replacement"
+comp = "reducer"
+axes = [2]
+crew = 4
+hours_note = "J2 replacement involves the balancer and upper arm support; add hours and steps from the manual"
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "Job lead", n = 1, duty = "Robot service technician: lockout/tagout, balancer handling, mastering" },
+  { role = "Mechanical technician", n = 2, duty = "Reducer and balancer removal and installation, bolt torque, greasing" },
+  { role = "Rigger", n = 1, duty = "Certified for rigging: crane operation and signaling" },
+]
+safety = [
+  "J2 replacement involves the balancer: secure it per the manual before disassembly; the balancer contains a preloaded spring",
+  "Before removing the J2 motor or releasing the brake, support the J2 arm and the mechanism above it; an unsupported arm will fall",
+  "Power off the controller and apply lockout/tagout; lifting is directed by a certified person",
+]
+steps = []
+
+[[pack.parts]]
+name = "J2 reducer (RV)"
+pn = "A97L-0218-0988#249"
+qty = 1
+unit = "unit"
+stock = 0
+verified = false
+source = "Listed by a parts dealer as R-2000iC/165F J2"
+main = true
+
+[[pack.parts]]
+name = "Grease VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "pail"
+grease = true
+verified = false
+source = "FANUC greasing data: A98L-0040-0174 for the R-2000iC mechanical unit"
+
+[[pack.parts]]
+name = "Reducer O-rings, seals and seal bolts"
+pn = "Per parts list"
+qty = 1
+unit = "set"
+verified = false
+
+[[pack]]
+id = "R2000iC165F-J23-motor"
+title = "Servo motor replacement (J2/J3)"
+comp = "motor"
+axes = [2, 3]
+crew = 3
+hours_min = 3
+hours_max = 5
+hours_note = "Estimate only; a pulse coder reset and mastering are needed after the motor is removed"
+toolsets = ["hand", "lifting", "check", "ppe"]
+roles = [
+  { role = "Job lead", n = 1, duty = "Robot service technician: lockout/tagout, motor removal and installation, pulse coder reset, mastering" },
+  { role = "Mechanical technician", n = 1, duty = "Bolts, O-rings, grease top-up" },
+  { role = "Rigger", n = 1, duty = "Certified for rigging: support the arm before the motor is removed" },
+]
+safety = [
+  "Power off the controller and apply lockout/tagout; mark cables before disconnecting",
+  "Support the arm of that axis under load before removing the motor; once the servo motor or brake is removed, an unsupported arm will fall",
+  "The motor may be hot right after stopping: wear heat-resistant gloves or let it cool",
+  "When jogging with power on, everyone leaves the fence or holds the teach pendant enabling switch, override 10% or less",
+]
+steps = [
+  { name = "Preparation: check the motor model against the nameplate, back up the controller, power off and lock out", crew = 2, hours = 0.5 },
+  { name = "Support the arm (eyebolts + slings under load)", crew = 3, hours = 0.5 },
+  { name = "Mark and disconnect the cables, remove the motor", crew = 2, hours = 0.5 },
+  { name = "Inspect the gear and reducer input; fit the new motor (new O-ring) and connect; remove the rigging once the brake holds", crew = 3, hours = 0.75 },
+  { name = "Pulse coder reset and mastering; confirm with existing program points", crew = 2, hours = 1.0 },
+  { name = "Test run, check temperature and abnormal noise; run DTM_DIAG and record the event", crew = 2, hours = 0.75 },
+]
+
+[[pack.parts]]
+name = "Servo motor αiSR30/3000"
+pn = "A06B-2041-B605#0042"
+qty = 1
+unit = "unit"
+stock = 0
+verified = false
+source = "Listed as the J2 and J3 motor in the FANUC R-2000iC catalog (A-97606-0293E)"
+note = "The motor nameplate on the robot takes precedence"
+main = true
+
+[[pack.parts]]
+name = "Motor O-ring"
+pn = "Per parts list"
+qty = 1
+unit = "pc"
+verified = false
+
+[[pack.parts]]
+name = "Motor mounting bolts"
+pn = "Per parts list"
+qty = 1
+unit = "set"
+verified = false
+
+[[pack]]
+id = "R2000iC165F-J23-grease"
+title = "Reducer grease change (J2/J3)"
+comp = "grease"
+axes = [2, 3]
+crew = 2
+hours_min = 2
+hours_max = 3
+hours_note = "Estimate only, per axis; grease volume and pressure release time per the manual"
+toolsets = ["grease", "check", "ppe"]
+roles = [
+  { role = "Job lead", n = 1, duty = "Robot service technician: lockout/tagout, jog to the greasing posture, release residual pressure" },
+  { role = "Greasing technician", n = 1, duty = "Open and close seal bolts, grease, weigh, take samples" },
+]
+safety = [
+  "Power off and lock out while opening or closing seal bolts; leave the fence when jogging is needed",
+  "Grease may spurt out when the outlet is opened: fit a collection bag first",
+  "Use only a manual pump and the specified grease; keep the outlet open while greasing so internal pressure does not damage the oil seals",
+]
+steps = [
+  { name = "Jog to the greasing posture, power off and lock out", crew = 2, hours = 0.5 },
+  { name = "Open the outlet and fit a bag; discard the first portion of the drained grease (stagnant grease near the outlet) and bottle about 5 g of the middle portion as the iron debris sample (DTM sample type: purged grease (middle portion))", crew = 2, hours = 0.25 },
+  { name = "Inject through the inlet with a manual pump until new grease comes out of the outlet; record the weights injected and drained", crew = 2, hours = 1.0 },
+  { name = "With the outlet open, run the robot per the manual to release residual pressure", crew = 2, hours = 0.5 },
+  { name = "Refit the seal bolts and clean up; record the grease change and iron debris in DTM", crew = 1, hours = 0.25 },
+]
+
+[[pack.parts]]
+name = "Grease VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "pail"
+grease = true
+verified = false
+source = "FANUC greasing data: A98L-0040-0174 for the R-2000iC mechanical unit"
+
+[[pack.parts]]
+name = "Seal bolts (or their seal washers)"
+pn = "Per parts list"
+qty = 2
+unit = "pc"
+verified = false
+note = "Replace if the seal washer is damaged"
+
+[[pack]]
+id = "R2000iC165F-E1-gearbox"
+title = "E1 travel-axis reducer (gearbox) replacement"
+comp = "gearbox"
+axes = [7]
+crew = 3
+hours_min = 4
+hours_max = 8
+hours_note = "Estimate only; follow the travel axis manufacturer's manual. After replacement, check the pinion-to-rack backlash and do mastering"
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "Job lead", n = 1, duty = "Robot service technician: lockout/tagout, securing the travel axis, mastering" },
+  { role = "Mechanical technician", n = 1, duty = "Motor and reducer removal and installation, rack mesh adjustment, bolt torque" },
+  { role = "Rigger", n = 1, duty = "Certified for rigging: lifting the reducer" },
+]
+safety = [
+  "Power off the controller and apply lockout/tagout; secure the travel axis carriage with stops or wedges so it cannot slide",
+  "Set up barriers at both ends of the track and around the carriage; nobody may enter the travel range",
+  "Lifting is directed by a certified person; check the lifting gear rating against the reducer weight in the manual",
+]
+steps = [
+  { name = "Preparation: check the reducer model, back up the controller, power off and lock out, secure the carriage", crew = 2, hours = 0.75 },
+  { name = "Remove the motor (mark the cables), remove the reducer and pinion", crew = 3, hours = 1.5 },
+  { name = "Check the rack for wear and foreign matter; fit the new reducer and pinion and adjust the backlash", crew = 3, hours = 2.0 },
+  { name = "Refit the motor, reconnect, grease; do mastering and confirm with existing program points", crew = 2, hours = 1.25 },
+  { name = "Test run back and forth at low speed, check noise and temperature; run DTM_DIAG (E1 segment) and record the event", crew = 2, hours = 0.75 },
+]
+
+[[pack.parts]]
+name = "E1 travel-axis reducer (gearbox)"
+pn = "Per the travel axis parts list"
+qty = 1
+unit = "unit"
+stock = 0
+verified = false
+note = "Per the travel axis nameplate and the manufacturer's manual"
+main = true
+
+[[pack.parts]]
+name = "E1 pinion (rack side)"
+pn = "Per the travel axis parts list"
+qty = 1
+unit = "pc"
+verified = false
+note = "Replace together if the pinion is worn"
+
+[[pack.parts]]
+name = "Grease for the gearbox and rack"
+pn = "As specified in the travel axis manual"
+qty = 1
+unit = "lot"
+grease = true
+verified = false
+
+[[pack]]
+id = "R2000iC165F-E1-grease"
+title = "E1 travel axis greasing (gearbox, rack and pinion)"
+comp = "grease"
+axes = [7]
+crew = 2
+hours_min = 1
+hours_max = 2
+hours_note = "Estimate only; greasing interval and amount per the travel axis manufacturer's manual (with an automatic lubricator, check the remaining amount and output)"
+toolsets = ["grease", "check", "ppe"]
+roles = [
+  { role = "Job lead", n = 1, duty = "Robot service technician: lockout/tagout, low-speed back-and-forth travel" },
+  { role = "Greasing technician", n = 1, duty = "Gearbox greasing, rack cleaning and greasing, automatic lubricator check" },
+]
+safety = [
+  "Power off, lock out and secure the carriage while greasing and cleaning the rack",
+  "When back-and-forth travel is needed to spread the grease, everyone leaves the travel range and the override is 10% or less",
+]
+steps = [
+  { name = "Power off and lock out, secure the carriage, remove old grease and dust from the rack, visually check the tooth flanks", crew = 2, hours = 0.5 },
+  { name = "Grease the gearbox per the manual (outlet open); grease the rack and pinion or refill the automatic lubricator", crew = 2, hours = 0.5 },
+  { name = "Travel the full stroke back and forth several times at low speed to spread the grease; record the grease change in DTM", crew = 2, hours = 0.5 },
+]
+
+[[pack.parts]]
+name = "Grease for the gearbox and rack"
+pn = "As specified in the travel axis manual"
+qty = 1
+unit = "lot"
+grease = true
+verified = false
+
+# [[pack]]
+# [[pack.parts]]

@@ -1,0 +1,79 @@
+# DTM 邊緣主機設定範本（[system] role = "edge"）：一台電腦管理一個廠區的多台機器人
+# 用法：複製成 config.toml，修改後執行
+#   python -m dtm -c config.toml run                 （或裝成服務：python -m dtm -c config.toml service install）
+# 主程式替每台機器人啟動一個獨立的程式（一台一個資料庫、一個儀表板），看顧它們、開廠區儀表板、同步到中央。
+# 這個檔案的其他區段（[health]、[motion]、[notify]…）是所有機器人共用的預設值；個別機器人不同的設定寫在
+# [[robots]] 底下，例如 [robots.axis.2]。
+
+[system]
+role = "edge"
+site_id = "P3"                 # 廠區代碼（上傳中央用，各廠不可重複）
+site_name = "三廠"
+
+[web]
+host = "0.0.0.0"
+port = 8080                    # 廠區儀表板；各機器人的儀表板是 8101、8102…（[fleet] base_port + 序號）
+public_host = "10.3.1.20"      # 這台電腦的 IP；中央畫面用它產生「機器人儀表板」連結
+users_db = "users.sqlite3"
+
+[fleet]
+base_port = 8100
+data_dir = "data"              # 每台一個資料庫：data/r14.sqlite3
+stale_s = 120                  # 機器人程式狀態檔超過 2 分鐘沒更新 → 判定卡住並重啟那一台
+max_restarts = 3               # 每台每小時最多自動重啟 3 次，超過就停止並通知
+
+[central]
+url = ""                       # 中央網址，例如 "https://10.1.2.3:8090"；空白 = 只看本廠（不上傳）
+token = "env:DTM_SYNC_TOKEN"
+interval_s = 60
+ca_file = ""                   # 中央用公司內部 CA 憑證時填 CA 檔（PEM）
+clock_drift_s = 60             # 這台電腦跟中央的時間差超過幾秒就警告（0 = 不檢查）
+
+[robot]                        # 所有機器人共用
+source = "fanuc_http"
+poll_hz = 5
+model = "R-2000iC/165F"
+
+[axes]
+enabled = [1, 2, 3, 4, 5, 6]   # 生產循環監測可以看全部軸；診斷段（DTM_DIAG）只教 J2、J3 也可以
+
+[axis.4]
+reducer_type = "gearbox"
+[axis.5]
+reducer_type = "gearbox"
+[axis.6]
+reducer_type = "gearbox"
+
+[motion]
+enabled = true
+
+[workpack]
+catalog = "workpacks.r2000ic_165f.toml"   # 作業包（工單）目錄；料號請以機台 Parts list 確認
+
+[notify]
+edge_fallback_s = 300          # 連不上中央超過 5 分鐘才由邊緣自己發「警戒」（簡訊、Email、Webhook 設定同單機版）
+
+# ---- 機器人清單：一台一個 [[robots]]
+[[robots]]
+id = "R01"
+name = "R01"
+host = "192.168.10.11"         # 控制器 IP
+line = "L1 焊接"
+impact = "中"                  # 停機影響度：高／中／低（風險矩陣用）
+
+[[robots]]
+id = "R14"
+name = "R14"
+host = "192.168.10.24"
+line = "L3 堆疊"
+impact = "高"
+
+[[robots]]
+id = "R22"
+name = "R22"
+host = "192.168.10.32"
+line = "L4 上下料"
+impact = "低"
+e1 = true                      # 有 E1 行走軸（BG Logic 要加 DTM_BG_E1，R[107]）
+[robots.axis.7]
+reducer_type = "rack"

@@ -1,0 +1,5 @@
+# 核心功能只需 Python 3.11 以上的標準函式庫。
+# 使用 Modbus TCP 資料來源時才需要：
+pymodbus>=3.6
+# 使用 4G 簡訊數據機（notify.sms.provider = "modem"）時才需要：
+pyserial>=3.5

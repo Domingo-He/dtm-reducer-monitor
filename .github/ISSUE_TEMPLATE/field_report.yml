@@ -1,0 +1,58 @@
+name: 現場試用回報
+description: 在現場試用 DTM 的心得（不收原始資料，文字描述即可）
+title: "[試用回報] "
+labels: ["field-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        謝謝你試用！這是本專案最需要的回饋。**請不要上傳原始資料、資料庫、照片或任何公司內部文件**；需要數字時寫「大約」即可，例如「比值約 1.3 倍」「大約提早 3 週」。
+  - type: textarea
+    id: env
+    attributes:
+      label: 1. 試用環境
+      description: 機型與控制器版本、試用台數、使用模式（單機／小型模式／邊緣主機／中央）、有沒有接振動或溫度感測器
+      placeholder: 例：R-2000iC/165F、R-30iB Plus、3 台、小型模式、沒有感測器
+    validations:
+      required: true
+  - type: textarea
+    id: period
+    attributes:
+      label: 2. 試用期間與資料來源
+      description: 跑了多久；用診斷程式 DTM_DIAG、生產動作代碼，或兩者都有；有沒有登錄鐵粉、換脂與換件事件
+    validations:
+      required: true
+  - type: textarea
+    id: commissioning
+    attributes:
+      label: 3. 導入檢查報告
+      description: 跑滿 7 天後的導入檢查報告，哪幾項是 ⚠？（取樣頻率、資料中斷、診斷切段、雜訊、動作代碼涵蓋）
+  - type: textarea
+    id: alarms
+    attributes:
+      label: 4. 警報與建議準不準
+      description: 系統發了哪些警報或保養建議；事後看來哪些是對的、哪些是誤報；有沒有發生問題但系統沒提示（漏報）
+    validations:
+      required: true
+  - type: textarea
+    id: teardown
+    attributes:
+      label: 5. 實際保養與拆檢
+      description: 試用期間有沒有換脂、換減速機或馬達；拆檢看到什麼（位置、型態、油脂狀態）；系統事前有沒有提示、提早多久
+  - type: textarea
+    id: usability
+    attributes:
+      label: 6. 最不好用或看不懂的地方
+      description: 安裝、設定、畫面、用語、通知，任何讓你卡住的地方
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: 7. 建議與後續
+      description: 想要的功能、門檻建議、是否願意繼續試用
+  - type: checkboxes
+    id: nodata
+    attributes:
+      label: 確認
+      options:
+        - label: 我沒有附上原始資料、資料庫、照片或公司內部文件，也沒有寫出公司名稱、IP、人名或電話
+          required: true

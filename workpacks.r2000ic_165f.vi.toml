@@ -1,0 +1,399 @@
+# Danh mục phụ tùng và gói công việc (tiếng Việt): tạo tự động từ workpacks.r2000ic_165f.toml bằng tools/workpack_l10n.py.
+# Hãy sửa tệp gốc rồi tạo lại. Mã phụ tùng lấy từ tài liệu công khai; xác minh với parts list và nhãn máy trước khi đặt hàng.
+
+[meta]
+robot_model = "R-2000iC/165F"
+manual = "Sổ tay bảo trì cơ cấu R-2000iC (B-83645EN)"
+updated = "2026-10-14"
+note = "Mã phụ tùng lấy từ tài liệu công khai; hãy xác minh với parts list và nhãn máy trước khi đặt hàng"
+
+[toolsets.hand]
+name = "Dụng cụ cầm tay"
+items = [
+  { name = "Bộ lục giác hệ mét (gồm loại cán dài)", qty = 1, unit = "bộ" },
+  { name = "Bộ khẩu (gồm cần nối dài, khớp lắc léo)", qty = 1, unit = "bộ" },
+  { name = "Cờ lê lực, dải lực thấp", spec = "Dải lực theo bảng mô-men siết bu lông trong sổ tay", qty = 1, unit = "cái" },
+  { name = "Cờ lê lực, dải lực cao", spec = "Dải lực theo bảng mô-men siết bu lông trong sổ tay", qty = 1, unit = "cái" },
+  { name = "Vít đẩy (để tách hộp giảm tốc)", spec = "Kích cỡ theo lỗ ren vít đẩy", qty = 2, unit = "cái" },
+  { name = "Thanh dẫn hướng (thanh ren dài cùng cỡ bu lông lắp, để căn chỉnh)", qty = 2, unit = "cái" },
+  { name = "Búa nhựa, thanh đồng", qty = 1, unit = "bộ" },
+  { name = "Dao cạo, đá mài dầu (làm sạch keo cũ và bavia)", qty = 1, unit = "bộ" },
+]
+
+[toolsets.lifting]
+name = "Nâng hạ và chống đỡ"
+items = [
+  { name = "Cầu trục hoặc giá nâng di động", spec = "Tải định mức ≥ 2 lần khối lượng vật nâng (khối lượng theo sổ tay)", qty = 1, unit = "chiếc" },
+  { name = "Bu lông mắt M10", spec = "Cách chống đỡ tay J3 theo sổ tay", qty = 2, unit = "cái" },
+  { name = "Dây cáp vải", spec = "Tải định mức phù hợp kế hoạch nâng", qty = 2, unit = "sợi" },
+  { name = "Pa lăng xích kéo tay (căn chỉnh tinh)", qty = 1, unit = "chiếc" },
+  { name = "Giá đỡ hoặc gỗ kê", qty = 1, unit = "bộ" },
+]
+
+[toolsets.grease]
+name = "Bơm mỡ và lấy mẫu"
+items = [
+  { name = "Súng bơm mỡ tay (có đồng hồ áp suất)", spec = "Sổ tay yêu cầu dùng bơm tay", qty = 1, unit = "cái" },
+  { name = "Đầu nối vú mỡ", qty = 1, unit = "bộ" },
+  { name = "Túi hoặc thùng hứng mỡ thải", qty = 2, unit = "cái" },
+  { name = "Cân điện tử (cân lượng mỡ bơm vào và xả ra)", qty = 1, unit = "chiếc" },
+  { name = "Lọ lấy mẫu bột sắt (phần giữa mỡ cũ, phần còn lại sau 24 giờ)", qty = 2, unit = "cái" },
+]
+
+[toolsets.check]
+name = "Kiểm tra và hiệu chuẩn"
+items = [
+  { name = "Bộ dạy (teach pendant)", qty = 1, unit = "chiếc" },
+  { name = "USB (sao lưu bộ điều khiển)", qty = 1, unit = "cái" },
+  { name = "Đồng hồ vạn năng", qty = 1, unit = "chiếc" },
+  { name = "Đèn pin, gương kiểm tra", qty = 1, unit = "bộ" },
+  { name = "Bút đánh dấu, nhãn dây (đánh dấu trước khi tháo dây)", qty = 1, unit = "bộ" },
+  { name = "Dụng cụ hiệu chuẩn điểm gốc (mastering)", spec = "Theo phương pháp mastering đang dùng tại nhà máy", qty = 1, unit = "bộ" },
+]
+
+[toolsets.ppe]
+name = "Bảo hộ và khóa an toàn"
+items = [
+  { name = "Mũ bảo hộ, giày bảo hộ", qty = 1, unit = "mỗi người" },
+  { name = "Găng tay chịu dầu, găng tay chịu nhiệt", qty = 1, unit = "mỗi người" },
+  { name = "Kính bảo hộ", qty = 1, unit = "mỗi người" },
+  { name = "Bộ khóa và thẻ LOTO (khóa cá nhân, thẻ)", qty = 1, unit = "mỗi người" },
+  { name = "Dung môi vệ sinh, khăn không bụi, tấm thấm dầu", qty = 1, unit = "lô" },
+]
+
+[[pack]]
+id = "R2000iC165F-J3-reducer"
+title = "Thay hộp giảm tốc J3"
+comp = "reducer"
+axes = [3]
+crew = 3
+hours_min = 10
+hours_max = 16
+hours_note = "Chỉ là ước tính, không phải giờ chuẩn của FANUC; lần đầu nên bố trí hai ca. Cộng thêm thời gian đông cứng keo nếu cần."
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "Người phụ trách công việc", n = 1, duty = "Kỹ thuật viên bảo trì robot: khóa và treo thẻ, tháo lắp động cơ, mastering, chạy thử" },
+  { role = "Kỹ thuật viên cơ khí", n = 1, duty = "Tháo lắp hộp giảm tốc, làm sạch bề mặt lắp ghép, siết bu lông đúng lực, bơm mỡ" },
+  { role = "Người móc cáp", n = 1, duty = "Có chứng chỉ nâng hạ: vận hành và ra hiệu cầu trục, chống đỡ tay J3" },
+]
+safety = [
+  "Họp an toàn đầu ca (toolbox meeting) trước khi làm: xác nhận phân công, kế hoạch nâng và vị trí dừng khẩn cấp",
+  "Ngắt điện bộ điều khiển và khóa, treo thẻ; mỗi người vào trong hàng rào phải treo khóa của mình",
+  "Trước khi tháo động cơ J3 hoặc nhả phanh J3, phải treo tay J3 bằng 2× bu lông mắt M10 và dây cáp vải ở trạng thái chịu tải; nếu không chống đỡ, tay robot sẽ rơi",
+  "Việc nâng do người có chứng chỉ chỉ huy; cấm đứng dưới vật nâng và trên đường di chuyển; kiểm tra tải định mức của dụng cụ nâng",
+  "Động cơ và hộp giảm tốc vừa dừng có thể còn nóng: đeo găng chịu nhiệt hoặc chờ nguội",
+  "Mỡ có thể phun ra đột ngột khi mở cửa xả: lắp túi hứng trước; chỉ bơm mỡ bằng bơm tay và mỡ được chỉ định",
+  "Khi cần cấp điện để chạy jog (xả áp dư, mastering): mọi người ra ngoài hàng rào hoặc giữ công tắc cho phép trên bộ dạy, hệ số tốc độ không quá 10%",
+  "Dùng dung môi và keo ở nơi thông gió, đeo găng tay; xử lý mỡ thải và chất thải dính dầu theo quy định nhà máy",
+  "Làm việc trên cao phải dùng sàn thao tác đạt chuẩn và đeo dây an toàn theo quy định",
+  "Kiểm đếm dụng cụ trước khi hoàn thành, bảo đảm không bỏ quên trong cơ cấu; khóa và thẻ do chính người treo tháo",
+]
+steps = [
+  { name = "Đưa robot về tư thế tháo theo sổ tay, ngắt điện và khóa, họp an toàn đầu ca (đối chiếu phụ tùng và sao lưu bộ điều khiển trước khi dừng máy)", crew = 2, hours = 1.0 },
+  { name = "Chống đỡ tay J3 (bu lông mắt + cáp chịu tải); xả mỡ cũ, bỏ phần đầu và lấy phần giữa làm mẫu bột sắt", crew = 3, hours = 1.0 },
+  { name = "Đánh dấu và tháo dây động cơ J3, tháo động cơ J3", crew = 2, hours = 0.5 },
+  { name = "Tháo bu lông lắp, nâng cụm tay J3 đặt lên giá đỡ, đẩy hộp giảm tốc cũ ra", crew = 3, hours = 2.0 },
+  { name = "Làm sạch bề mặt lắp ghép; kiểm tra chốt định vị, lỗ ren và mặt răng bánh răng phía động cơ", crew = 2, hours = 1.0 },
+  { name = "Lắp hộp giảm tốc mới: gioăng O, keo làm kín, siết chéo theo từng cấp đến lực quy định", crew = 2, hours = 2.0 },
+  { name = "Nâng tay J3 về vị trí, căn chỉnh và siết; lắp lại động cơ J3 và đấu dây; tháo dụng cụ nâng sau khi xác nhận phanh đã giữ (phải tháo xong trước khi cấp điện)", crew = 3, hours = 1.5 },
+  { name = "Bơm mỡ (mở cửa xả, bơm đến khi mỡ mới chảy ra) và xả áp dư", crew = 2, hours = 1.0 },
+  { name = "Reset pulse coder và mastering J3; xác nhận bằng các điểm của chương trình hiện có", crew = 2, hours = 1.5 },
+  { name = "Chạy thử, kiểm tra rò rỉ dầu và tiếng lạ; chạy DTM_DIAG và ghi sự kiện", crew = 2, hours = 1.0 },
+]
+
+[[pack.parts]]
+name = "Hộp giảm tốc J3 (RV)"
+pn = "A97L-0218-0989#218"
+qty = 1
+unit = "chiếc"
+stock = 0
+verified = false
+main = true
+source = "Nhà bán phụ tùng ghi là R-2000iC/165F J3; các biến thể tải trọng khác có thể khác hậu tố"
+
+[[pack.parts]]
+name = "Mỡ bôi trơn VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "thùng"
+grease = true
+verified = false
+source = "Tài liệu bơm mỡ FANUC: A98L-0040-0174 dùng cho cơ cấu R-2000iC"
+
+[[pack.parts]]
+name = "Gioăng O và phớt hộp giảm tốc"
+pn = "Theo parts list"
+qty = 1
+unit = "bộ"
+verified = false
+
+[[pack.parts]]
+name = "Gioăng O động cơ J3"
+pn = "Theo parts list"
+qty = 1
+unit = "cái"
+verified = false
+
+[[pack.parts]]
+name = "Bu lông bịt cửa bơm/cửa xả mỡ"
+pn = "Theo parts list"
+qty = 2
+unit = "cái"
+verified = false
+note = "Thay mới nếu vòng đệm kín hỏng hoặc keo đã mất tác dụng"
+
+[[pack.parts]]
+name = "Bu lông lắp hộp giảm tốc và tay J3"
+pn = "Theo parts list"
+qty = 1
+unit = "bộ"
+verified = false
+note = "Thay mới bu lông đã tháo nếu bị biến dạng hoặc hỏng ren"
+
+[[pack.parts]]
+name = "Keo khóa ren"
+pn = "Theo chỉ định của sổ tay"
+qty = 1
+unit = "lọ"
+verified = false
+
+[[pack.parts]]
+name = "Keo làm kín mặt bích"
+pn = "Theo chỉ định của sổ tay"
+qty = 1
+unit = "cái"
+verified = false
+
+[[pack]]
+id = "R2000iC165F-J2-reducer"
+title = "Thay hộp giảm tốc J2"
+comp = "reducer"
+axes = [2]
+crew = 4
+hours_note = "Thay J2 liên quan đến bộ cân bằng và chống đỡ tay trên; hãy bổ sung giờ công và các bước theo sổ tay"
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "Người phụ trách công việc", n = 1, duty = "Kỹ thuật viên bảo trì robot: khóa và treo thẻ, xử lý bộ cân bằng, mastering" },
+  { role = "Kỹ thuật viên cơ khí", n = 2, duty = "Tháo lắp hộp giảm tốc và bộ cân bằng, siết bu lông đúng lực, bơm mỡ" },
+  { role = "Người móc cáp", n = 1, duty = "Có chứng chỉ nâng hạ: vận hành và ra hiệu cầu trục" },
+]
+safety = [
+  "Thay J2 liên quan đến bộ cân bằng: chỉ tháo sau khi cố định bộ cân bằng theo sổ tay; bên trong bộ cân bằng có lò xo nén sẵn",
+  "Trước khi tháo động cơ J2 hoặc nhả phanh, phải chống đỡ tay J2 và cơ cấu phía trên; nếu không chống đỡ, tay robot sẽ rơi",
+  "Ngắt điện bộ điều khiển và khóa, treo thẻ; việc nâng do người có chứng chỉ chỉ huy",
+]
+steps = []
+
+[[pack.parts]]
+name = "Hộp giảm tốc J2 (RV)"
+pn = "A97L-0218-0988#249"
+qty = 1
+unit = "chiếc"
+stock = 0
+verified = false
+source = "Nhà bán phụ tùng ghi là R-2000iC/165F J2"
+main = true
+
+[[pack.parts]]
+name = "Mỡ bôi trơn VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "thùng"
+grease = true
+verified = false
+source = "Tài liệu bơm mỡ FANUC: A98L-0040-0174 dùng cho cơ cấu R-2000iC"
+
+[[pack.parts]]
+name = "Gioăng O, phớt và bu lông bịt của hộp giảm tốc"
+pn = "Theo parts list"
+qty = 1
+unit = "bộ"
+verified = false
+
+[[pack]]
+id = "R2000iC165F-J23-motor"
+title = "Thay động cơ servo (J2/J3)"
+comp = "motor"
+axes = [2, 3]
+crew = 3
+hours_min = 3
+hours_max = 5
+hours_note = "Chỉ là ước tính; sau khi tháo động cơ cần reset pulse coder và mastering"
+toolsets = ["hand", "lifting", "check", "ppe"]
+roles = [
+  { role = "Người phụ trách công việc", n = 1, duty = "Kỹ thuật viên bảo trì robot: khóa và treo thẻ, tháo lắp động cơ, reset pulse coder, mastering" },
+  { role = "Kỹ thuật viên cơ khí", n = 1, duty = "Tháo lắp bu lông, gioăng O, bổ sung mỡ" },
+  { role = "Người móc cáp", n = 1, duty = "Có chứng chỉ nâng hạ: chống đỡ tay robot trước khi tháo động cơ" },
+]
+safety = [
+  "Ngắt điện bộ điều khiển và khóa, treo thẻ; đánh dấu trước khi tháo dây",
+  "Chống đỡ tay của trục đó ở trạng thái chịu tải trước khi tháo động cơ; khi đã tháo động cơ servo hoặc phanh, tay không được chống đỡ sẽ rơi",
+  "Động cơ vừa dừng có thể còn nóng: đeo găng chịu nhiệt hoặc chờ nguội",
+  "Khi cấp điện chạy jog, mọi người ra ngoài hàng rào hoặc giữ công tắc cho phép trên bộ dạy, hệ số tốc độ không quá 10%",
+]
+steps = [
+  { name = "Chuẩn bị: đối chiếu model động cơ với nhãn máy, sao lưu bộ điều khiển, ngắt điện và khóa", crew = 2, hours = 0.5 },
+  { name = "Chống đỡ tay robot (bu lông mắt + dây cáp vải chịu tải)", crew = 3, hours = 0.5 },
+  { name = "Đánh dấu và tháo dây, tháo động cơ", crew = 2, hours = 0.5 },
+  { name = "Kiểm tra bánh răng và đầu vào hộp giảm tốc; lắp động cơ mới (gioăng O mới) và đấu dây; tháo dụng cụ nâng sau khi xác nhận phanh đã giữ", crew = 3, hours = 0.75 },
+  { name = "Reset pulse coder và mastering; xác nhận bằng các điểm của chương trình hiện có", crew = 2, hours = 1.0 },
+  { name = "Chạy thử, kiểm tra nhiệt độ và tiếng lạ; chạy DTM_DIAG và ghi sự kiện", crew = 2, hours = 0.75 },
+]
+
+[[pack.parts]]
+name = "Động cơ servo αiSR30/3000"
+pn = "A06B-2041-B605#0042"
+qty = 1
+unit = "chiếc"
+stock = 0
+verified = false
+source = "Được liệt kê là động cơ J2, J3 trong catalogue FANUC R-2000iC (A-97606-0293E)"
+note = "Lấy nhãn động cơ trên robot làm chuẩn"
+main = true
+
+[[pack.parts]]
+name = "Gioăng O động cơ"
+pn = "Theo parts list"
+qty = 1
+unit = "cái"
+verified = false
+
+[[pack.parts]]
+name = "Bu lông lắp động cơ"
+pn = "Theo parts list"
+qty = 1
+unit = "bộ"
+verified = false
+
+[[pack]]
+id = "R2000iC165F-J23-grease"
+title = "Thay mỡ hộp giảm tốc (J2/J3)"
+comp = "grease"
+axes = [2, 3]
+crew = 2
+hours_min = 2
+hours_max = 3
+hours_note = "Chỉ là ước tính, cho một trục; lượng mỡ và thời gian xả áp dư theo sổ tay"
+toolsets = ["grease", "check", "ppe"]
+roles = [
+  { role = "Người phụ trách công việc", n = 1, duty = "Kỹ thuật viên bảo trì robot: khóa và treo thẻ, jog về tư thế bơm mỡ, xả áp dư" },
+  { role = "Người bơm mỡ", n = 1, duty = "Mở/đóng bu lông bịt, bơm mỡ, cân, lấy mẫu" },
+]
+safety = [
+  "Ngắt điện và khóa khi mở/đóng bu lông bịt; khi cần chạy jog thì mọi người ra ngoài hàng rào",
+  "Mỡ có thể phun ra đột ngột khi mở cửa xả: lắp túi hứng trước",
+  "Chỉ dùng bơm tay và mỡ được chỉ định; khi bơm mỡ phải mở cửa xả để áp suất bên trong không làm hỏng phớt dầu",
+]
+steps = [
+  { name = "Jog về tư thế bơm mỡ, ngắt điện và khóa", crew = 2, hours = 0.5 },
+  { name = "Mở cửa xả và lắp túi; bỏ phần đầu của mỡ xả ra (mỡ đọng gần cửa xả), lấy khoảng 5 g phần giữa cho vào lọ làm mẫu bột sắt (loại mẫu trong DTM: mỡ xả khi thay (phần giữa))", crew = 2, hours = 0.25 },
+  { name = "Bơm bằng bơm tay từ cửa bơm cho đến khi mỡ mới chảy ra ở cửa xả; ghi khối lượng bơm vào và xả ra", crew = 2, hours = 1.0 },
+  { name = "Để cửa xả mở, chạy robot theo sổ tay để xả áp dư", crew = 2, hours = 0.5 },
+  { name = "Lắp lại bu lông bịt và vệ sinh; ghi thay mỡ và bột sắt vào DTM", crew = 1, hours = 0.25 },
+]
+
+[[pack.parts]]
+name = "Mỡ bôi trơn VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "thùng"
+grease = true
+verified = false
+source = "Tài liệu bơm mỡ FANUC: A98L-0040-0174 dùng cho cơ cấu R-2000iC"
+
+[[pack.parts]]
+name = "Bu lông bịt (hoặc vòng đệm kín)"
+pn = "Theo parts list"
+qty = 2
+unit = "cái"
+verified = false
+note = "Thay mới nếu vòng đệm kín bị hỏng"
+
+[[pack]]
+id = "R2000iC165F-E1-gearbox"
+title = "Thay hộp giảm tốc (hộp số) trục di chuyển E1"
+comp = "gearbox"
+axes = [7]
+crew = 3
+hours_min = 4
+hours_max = 8
+hours_note = "Chỉ là ước tính; theo sổ tay của nhà sản xuất trục di chuyển. Sau khi thay cần kiểm tra khe hở ăn khớp bánh răng nhỏ với thanh răng và mastering"
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "Người phụ trách công việc", n = 1, duty = "Kỹ thuật viên bảo trì robot: khóa và treo thẻ, cố định trục di chuyển, mastering" },
+  { role = "Kỹ thuật viên cơ khí", n = 1, duty = "Tháo lắp động cơ và hộp giảm tốc, chỉnh ăn khớp thanh răng, siết bu lông đúng lực" },
+  { role = "Người móc cáp", n = 1, duty = "Có chứng chỉ nâng hạ: nâng hộp giảm tốc" },
+]
+safety = [
+  "Ngắt điện bộ điều khiển và khóa, treo thẻ; cố định bàn trượt trục di chuyển bằng chặn hoặc nêm để không bị trượt",
+  "Lập vùng cấm ở hai đầu ray và quanh bàn trượt, cấm người vào phạm vi di chuyển",
+  "Việc nâng do người có chứng chỉ chỉ huy; kiểm tra tải của dụng cụ nâng theo khối lượng hộp giảm tốc trong sổ tay",
+]
+steps = [
+  { name = "Chuẩn bị: đối chiếu model hộp giảm tốc, sao lưu bộ điều khiển, ngắt điện và khóa, cố định bàn trượt", crew = 2, hours = 0.75 },
+  { name = "Tháo động cơ (đánh dấu dây), tháo hộp giảm tốc và bánh răng nhỏ", crew = 3, hours = 1.5 },
+  { name = "Kiểm tra mòn và dị vật trên thanh răng; lắp hộp giảm tốc và bánh răng nhỏ mới, chỉnh khe hở ăn khớp", crew = 3, hours = 2.0 },
+  { name = "Lắp lại động cơ, đấu dây, bơm mỡ; mastering và xác nhận bằng các điểm của chương trình hiện có", crew = 2, hours = 1.25 },
+  { name = "Chạy thử qua lại ở tốc độ thấp, kiểm tra tiếng lạ và nhiệt độ; chạy DTM_DIAG (đoạn E1) và ghi sự kiện", crew = 2, hours = 0.75 },
+]
+
+[[pack.parts]]
+name = "Hộp giảm tốc (hộp số) trục di chuyển E1"
+pn = "Theo danh mục phụ tùng của trục di chuyển"
+qty = 1
+unit = "chiếc"
+stock = 0
+verified = false
+note = "Theo nhãn của trục di chuyển và sổ tay của nhà sản xuất"
+main = true
+
+[[pack.parts]]
+name = "Bánh răng nhỏ E1 (phía ăn khớp thanh răng)"
+pn = "Theo danh mục phụ tùng của trục di chuyển"
+qty = 1
+unit = "cái"
+verified = false
+note = "Thay cùng lúc nếu bánh răng nhỏ bị mòn"
+
+[[pack.parts]]
+name = "Mỡ cho hộp số và thanh răng"
+pn = "Theo chỉ định trong sổ tay trục di chuyển"
+qty = 1
+unit = "lô"
+grease = true
+verified = false
+
+[[pack]]
+id = "R2000iC165F-E1-grease"
+title = "Bơm mỡ trục di chuyển E1 (hộp số, thanh răng và bánh răng nhỏ)"
+comp = "grease"
+axes = [7]
+crew = 2
+hours_min = 1
+hours_max = 2
+hours_note = "Chỉ là ước tính; chu kỳ và lượng bơm mỡ theo sổ tay nhà sản xuất trục di chuyển (nếu dùng bộ bơm mỡ tự động thì kiểm tra lượng còn lại và lượng ra)"
+toolsets = ["grease", "check", "ppe"]
+roles = [
+  { role = "Người phụ trách công việc", n = 1, duty = "Kỹ thuật viên bảo trì robot: khóa và treo thẻ, chạy qua lại trục di chuyển ở tốc độ thấp" },
+  { role = "Người bơm mỡ", n = 1, duty = "Bơm mỡ hộp số, làm sạch và bôi mỡ thanh răng, kiểm tra bộ bơm mỡ tự động" },
+]
+safety = [
+  "Khi bơm mỡ và làm sạch thanh răng phải ngắt điện, khóa và cố định bàn trượt",
+  "Khi cần chạy qua lại để mỡ phân bố đều, mọi người ra khỏi phạm vi di chuyển, tỷ lệ tốc độ 10% trở xuống",
+]
+steps = [
+  { name = "Ngắt điện và khóa, cố định bàn trượt, làm sạch mỡ cũ và bụi trên thanh răng, kiểm tra bằng mắt mặt răng", crew = 2, hours = 0.5 },
+  { name = "Bơm mỡ hộp số theo sổ tay (mở cửa xả); bôi mỡ thanh răng và bánh răng nhỏ hoặc nạp thêm bộ bơm mỡ tự động", crew = 2, hours = 0.5 },
+  { name = "Chạy qua lại hết hành trình vài lần ở tốc độ thấp để mỡ phân bố; ghi việc thay mỡ trong DTM", crew = 2, hours = 0.5 },
+]
+
+[[pack.parts]]
+name = "Mỡ cho hộp số và thanh răng"
+pn = "Theo chỉ định trong sổ tay trục di chuyển"
+qty = 1
+unit = "lô"
+grease = true
+verified = false
+
+# [[pack]]
+# [[pack.parts]]

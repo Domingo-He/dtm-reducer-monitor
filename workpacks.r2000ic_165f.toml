@@ -1,0 +1,432 @@
+# 備品與作業包目錄：R-2000iC/165F
+#
+# 維護決策發出建議（換脂、準備備品、安排更換、檢查馬達）時，系統依「軸 + 元件」找到對應的作業包，
+# 在儀表板、LINE／Email 通知與列印工單中列出：備品料號與數量、潤滑脂、工具、人力、工時、安全事項、步驟。
+#
+# 重要：
+# - 料號來自公開資料（FANUC 型錄、給脂資料、零件商標示），verified = false 表示「尚未以機台 Parts list 或銘牌確認」。
+#   下單前請對照維護手冊 Appendix「Maintenance Parts」與機台銘牌，確認後改成 verified = true。
+# - 工時是參考估算，不是原廠標準工時。請用實際作業紀錄修正。
+# - stock 是目前庫存數量；小於 qty 時系統會標示「缺料」。不填 = 不檢查庫存。
+# - 欄位說明在檔案最後。
+
+[meta]
+robot_model = "R-2000iC/165F"
+manual = "R-2000iC 機構部維護手冊（B-83645EN）"
+updated = "2026-10-14"
+note = "料號來自公開資料，下單前請以機台 Parts list 與銘牌確認"
+
+# ---------------------------------------------------------------- 工具組（各作業包共用）
+[toolsets.hand]
+name = "手工具"
+items = [
+  { name = "公制六角扳手組（含長柄）", qty = 1, unit = "組" },
+  { name = "套筒扳手組（含延長桿、萬向接頭）", qty = 1, unit = "組" },
+  { name = "扭力扳手：低扭力段", spec = "範圍依手冊螺栓扭力表", qty = 1, unit = "支" },
+  { name = "扭力扳手：高扭力段", spec = "範圍依手冊螺栓扭力表", qty = 1, unit = "支" },
+  { name = "頂絲（分離減速機用）", spec = "規格依頂出螺孔", qty = 2, unit = "支" },
+  { name = "導桿（與固定螺栓同規格的長螺桿，對位用）", qty = 2, unit = "支" },
+  { name = "塑膠槌、銅棒", qty = 1, unit = "組" },
+  { name = "刮刀、油石（清除舊密封膠與毛邊）", qty = 1, unit = "組" },
+]
+
+[toolsets.lifting]
+name = "吊掛與支撐"
+items = [
+  { name = "天車或移動式吊架", spec = "額定荷重 ≥ 被吊物重量 2 倍（重量依手冊）", qty = 1, unit = "台" },
+  { name = "M10 環首螺栓", spec = "手冊指定的 J3 臂支撐方式", qty = 2, unit = "個" },
+  { name = "吊帶", spec = "額定荷重符合吊掛計畫", qty = 2, unit = "條" },
+  { name = "手拉吊車（微調對位）", qty = 1, unit = "台" },
+  { name = "支撐架或枕木", qty = 1, unit = "組" },
+]
+
+[toolsets.grease]
+name = "給脂與取樣"
+items = [
+  { name = "手動黃油槍（附壓力錶）", spec = "手冊要求用手動泵", qty = 1, unit = "支" },
+  { name = "給脂嘴轉接頭", qty = 1, unit = "組" },
+  { name = "廢脂收集袋或容器", qty = 2, unit = "個" },
+  { name = "電子秤（量注入與排出量）", qty = 1, unit = "台" },
+  { name = "鐵粉取樣瓶（舊脂中段、24 小時後殘留）", qty = 2, unit = "個" },
+]
+
+[toolsets.check]
+name = "檢查與校正"
+items = [
+  { name = "示教器", qty = 1, unit = "台" },
+  { name = "USB 隨身碟（控制器備份）", qty = 1, unit = "個" },
+  { name = "萬用電表", qty = 1, unit = "台" },
+  { name = "手電筒、檢查鏡", qty = 1, unit = "組" },
+  { name = "標記筆、線材標籤（拆線前標記）", qty = 1, unit = "組" },
+  { name = "零點校正用具", spec = "依廠內採用的校正方式", qty = 1, unit = "組" },
+]
+
+[toolsets.ppe]
+name = "防護與上鎖"
+items = [
+  { name = "安全帽、安全鞋", qty = 1, unit = "每人" },
+  { name = "耐油手套、耐熱手套", qty = 1, unit = "每人" },
+  { name = "護目鏡", qty = 1, unit = "每人" },
+  { name = "上鎖掛牌組（個人鎖、標籤）", qty = 1, unit = "每人" },
+  { name = "清潔溶劑、無塵布、吸油棉", qty = 1, unit = "批" },
+]
+
+# ---------------------------------------------------------------- J3 減速機更換
+[[pack]]
+id = "R2000iC165F-J3-reducer"
+title = "J3 減速機更換"
+comp = "reducer"
+axes = [3]
+crew = 3
+hours_min = 10
+hours_max = 16
+hours_note = "參考估算，非原廠標準工時；第一次作業建議排兩個班次。密封膠若需固化時間另計。"
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "作業負責人", n = 1, duty = "機器人維修技師：上鎖掛牌、拆裝馬達、零點校正、試運轉" },
+  { role = "機械技師", n = 1, duty = "拆裝減速機、清潔接合面、螺栓扭力、給脂" },
+  { role = "吊掛作業人員", n = 1, duty = "持吊掛相關證照：吊車操作與指揮、J3 臂支撐" },
+]
+safety = [
+  "作業前召開工具箱會議：確認分工、吊掛計畫、緊急停止位置",
+  "控制器斷電並上鎖掛牌；每位進入圍籬的人員掛上自己的鎖",
+  "拆 J3 馬達或解除 J3 制動器前，先用 M10 環首螺栓 ×2 與吊帶把 J3 臂吊住並受力；未支撐時手臂會落下",
+  "吊掛由持證人員指揮；吊物下方與移動路徑禁止站人；確認吊具額定荷重",
+  "剛停機的馬達與減速機可能高溫：戴耐熱手套或等待冷卻",
+  "打開排脂口時油脂可能突然噴出：先套收集袋；給脂只用手動泵與指定油脂",
+  "需要送電點動（釋放殘壓、零點校正）時：人員退出圍籬或握持示教器使能開關，倍率 10% 以下",
+  "溶劑與密封膠在通風處使用並戴手套；廢脂與沾油廢棄物依廠內規定處理",
+  "高處作業使用合格工作平台，依規定繫安全帶",
+  "完工前清點工具，確認沒有遺留在機構內；解除掛牌由掛鎖人本人執行",
+]
+steps = [
+  { name = "移到手冊指定的拆卸姿態、斷電上鎖、工具箱會議（核對備品與備份控制器在停機前完成）", crew = 2, hours = 1.0 },
+  { name = "支撐 J3 臂（環首螺栓＋吊帶受力）；排出舊脂，先丟棄前段、取中段作鐵粉樣本", crew = 3, hours = 1.0 },
+  { name = "標記並拆下 J3 馬達線材，拆下 J3 馬達", crew = 2, hours = 0.5 },
+  { name = "拆固定螺栓、吊離 J3 臂組放上支撐架，頂出舊減速機", crew = 3, hours = 2.0 },
+  { name = "清潔接合面；檢查定位銷、螺孔、馬達側齒輪齒面", crew = 2, hours = 1.0 },
+  { name = "安裝新減速機：O 形環、密封膠、對角分段鎖到規定扭力", crew = 2, hours = 2.0 },
+  { name = "吊回 J3 臂並對位鎖固；裝回 J3 馬達並接線；確認制動器撐住後拆除吊具（送電前必須拆完）", crew = 3, hours = 1.5 },
+  { name = "給脂（排脂口打開，注入到新脂流出）並釋放殘壓", crew = 2, hours = 1.0 },
+  { name = "脈衝重置與 J3 零點校正；以既有程式點位確認", crew = 2, hours = 1.5 },
+  { name = "試運轉、漏油與異音檢查；執行 DTM_DIAG 並登錄事件", crew = 2, hours = 1.0 },
+]
+
+[[pack.parts]]
+name = "J3 減速機（RV）"
+pn = "A97L-0218-0989#218"
+qty = 1
+unit = "台"
+stock = 0
+verified = false
+main = true
+source = "零件商標示為 R-2000iC/165F J3；其他負載型號後綴可能不同"
+
+[[pack.parts]]
+name = "潤滑脂 VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "桶"
+grease = true
+verified = false
+source = "FANUC 給脂資料：R-2000iC 機構部用 A98L-0040-0174"
+
+[[pack.parts]]
+name = "減速機 O 形環與密封件"
+pn = "依 Parts list"
+qty = 1
+unit = "套"
+verified = false
+
+[[pack.parts]]
+name = "J3 馬達 O 形環"
+pn = "依 Parts list"
+qty = 1
+unit = "個"
+verified = false
+
+[[pack.parts]]
+name = "給脂口／排脂口封止螺栓"
+pn = "依 Parts list"
+qty = 2
+unit = "個"
+verified = false
+note = "密封墊損傷或塗膠失效就換新"
+
+[[pack.parts]]
+name = "減速機與 J3 臂固定螺栓"
+pn = "依 Parts list"
+qty = 1
+unit = "組"
+verified = false
+note = "拆下的螺栓若變形或螺紋損傷就換新"
+
+[[pack.parts]]
+name = "螺紋固定劑"
+pn = "依手冊指定"
+qty = 1
+unit = "瓶"
+verified = false
+
+[[pack.parts]]
+name = "平面密封膠"
+pn = "依手冊指定"
+qty = 1
+unit = "支"
+verified = false
+
+# ---------------------------------------------------------------- J2 減速機更換（步驟待補）
+[[pack]]
+id = "R2000iC165F-J2-reducer"
+title = "J2 減速機更換"
+comp = "reducer"
+axes = [2]
+crew = 4
+hours_note = "J2 更換涉及平衡器與上臂支撐，工時與步驟請依手冊補上"
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "作業負責人", n = 1, duty = "機器人維修技師：上鎖掛牌、平衡器處置、零點校正" },
+  { role = "機械技師", n = 2, duty = "拆裝減速機與平衡器、螺栓扭力、給脂" },
+  { role = "吊掛作業人員", n = 1, duty = "持吊掛相關證照：吊車操作與指揮" },
+]
+safety = [
+  "J2 更換涉及平衡器：依手冊固定平衡器後才能拆解，平衡器內有彈簧預壓",
+  "拆 J2 馬達或解除制動器前，先支撐 J2 臂與上方機構；未支撐時手臂會落下",
+  "控制器斷電並上鎖掛牌；吊掛由持證人員指揮",
+]
+steps = []
+
+[[pack.parts]]
+name = "J2 減速機（RV）"
+pn = "A97L-0218-0988#249"
+qty = 1
+unit = "台"
+stock = 0
+verified = false
+source = "零件商標示為 R-2000iC/165F J2"
+main = true
+
+[[pack.parts]]
+name = "潤滑脂 VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "桶"
+grease = true
+verified = false
+source = "FANUC 給脂資料：R-2000iC 機構部用 A98L-0040-0174"
+
+[[pack.parts]]
+name = "減速機 O 形環、密封件、封止螺栓"
+pn = "依 Parts list"
+qty = 1
+unit = "套"
+verified = false
+
+# ---------------------------------------------------------------- J2／J3 伺服馬達更換
+[[pack]]
+id = "R2000iC165F-J23-motor"
+title = "伺服馬達更換（J2／J3）"
+comp = "motor"
+axes = [2, 3]
+crew = 3
+hours_min = 3
+hours_max = 5
+hours_note = "參考估算；馬達拆下後需要脈衝重置與零點校正"
+toolsets = ["hand", "lifting", "check", "ppe"]
+roles = [
+  { role = "作業負責人", n = 1, duty = "機器人維修技師：上鎖掛牌、拆裝馬達、脈衝重置、零點校正" },
+  { role = "機械技師", n = 1, duty = "拆裝螺栓、O 形環、補脂" },
+  { role = "吊掛作業人員", n = 1, duty = "持吊掛相關證照：拆馬達前支撐手臂" },
+]
+safety = [
+  "控制器斷電並上鎖掛牌；拆線前標記",
+  "拆馬達前先支撐該軸手臂並受力；伺服馬達或制動器拆下後，未支撐的手臂會落下",
+  "剛停機的馬達可能高溫：戴耐熱手套或等待冷卻",
+  "送電點動時人員退出圍籬或握持示教器使能開關，倍率 10% 以下",
+]
+steps = [
+  { name = "準備：核對馬達型號與銘牌、備份控制器、斷電上鎖", crew = 2, hours = 0.5 },
+  { name = "支撐手臂（環首螺栓＋吊帶受力）", crew = 3, hours = 0.5 },
+  { name = "標記並拆下線材，拆下馬達", crew = 2, hours = 0.5 },
+  { name = "檢查齒輪與減速機輸入端；裝新馬達（新 O 形環）並接線；確認制動器撐住後拆除吊具", crew = 3, hours = 0.75 },
+  { name = "脈衝重置與零點校正；以既有程式點位確認", crew = 2, hours = 1.0 },
+  { name = "試運轉、溫度與異音檢查；執行 DTM_DIAG 並登錄事件", crew = 2, hours = 0.75 },
+]
+
+[[pack.parts]]
+name = "伺服馬達 αiSR30/3000"
+pn = "A06B-2041-B605#0042"
+qty = 1
+unit = "台"
+stock = 0
+verified = false
+source = "FANUC R-2000iC 型錄（A-97606-0293E）列為 J2、J3 馬達"
+note = "以機台馬達銘牌為準"
+main = true
+
+[[pack.parts]]
+name = "馬達 O 形環"
+pn = "依 Parts list"
+qty = 1
+unit = "個"
+verified = false
+
+[[pack.parts]]
+name = "馬達固定螺栓"
+pn = "依 Parts list"
+qty = 1
+unit = "組"
+verified = false
+
+# ---------------------------------------------------------------- J2／J3 換脂
+[[pack]]
+id = "R2000iC165F-J23-grease"
+title = "減速機換脂（J2／J3）"
+comp = "grease"
+axes = [2, 3]
+crew = 2
+hours_min = 2
+hours_max = 3
+hours_note = "參考估算，單軸；給脂量與殘壓釋放時間依手冊"
+toolsets = ["grease", "check", "ppe"]
+roles = [
+  { role = "作業負責人", n = 1, duty = "機器人維修技師：上鎖掛牌、點動到給脂姿態、釋放殘壓" },
+  { role = "給脂人員", n = 1, duty = "開關封止螺栓、給脂、秤重、取樣" },
+]
+safety = [
+  "開關封止螺栓時斷電上鎖；需要點動時人員退出圍籬",
+  "打開排脂口時油脂可能突然噴出：先套收集袋",
+  "只用手動泵與指定油脂；給脂時排脂口必須打開，避免內壓損傷油封",
+]
+steps = [
+  { name = "點動到給脂姿態，斷電上鎖", crew = 2, hours = 0.5 },
+  { name = "打開排脂口並套袋；排出的舊脂先丟棄前段（排出口附近停滯的油脂），取中段約 5 g 裝瓶作鐵粉樣本（DTM 樣本類型：換脂排出（中段））", crew = 2, hours = 0.25 },
+  { name = "以手動泵從給脂口注入，直到排脂口流出新脂；記錄注入與排出重量", crew = 2, hours = 1.0 },
+  { name = "排脂口打開，依手冊運轉釋放殘壓", crew = 2, hours = 0.5 },
+  { name = "裝回封止螺栓、清潔；在 DTM 登錄換脂與鐵粉", crew = 1, hours = 0.25 },
+]
+
+[[pack.parts]]
+name = "潤滑脂 VIGOGREASE RE0"
+pn = "A98L-0040-0174#16KG"
+qty = 1
+unit = "桶"
+grease = true
+verified = false
+source = "FANUC 給脂資料：R-2000iC 機構部用 A98L-0040-0174"
+
+[[pack.parts]]
+name = "封止螺栓（或其密封墊）"
+pn = "依 Parts list"
+qty = 2
+unit = "個"
+verified = false
+note = "密封墊損傷就換新"
+
+# ---------------------------------------------------------------- E1 行走軸（第 7 軸）
+# 行走軸多半由行走軸廠商（RTU）或系統整合商提供，減速機與齒條規格依該廠商手冊；
+# 以下料號一律「依 Parts list」，工時為參考估算，請以實際作業紀錄修正。
+[[pack]]
+id = "R2000iC165F-E1-gearbox"
+title = "E1 行走軸減速機（齒輪箱）更換"
+comp = "gearbox"
+axes = [7]
+crew = 3
+hours_min = 4
+hours_max = 8
+hours_note = "參考估算；依行走軸廠商手冊。更換後需檢查小齒輪與齒條嚙合間隙、零點校正"
+toolsets = ["hand", "lifting", "grease", "check", "ppe"]
+roles = [
+  { role = "作業負責人", n = 1, duty = "機器人維修技師：上鎖掛牌、行走軸固定、零點校正" },
+  { role = "機械技師", n = 1, duty = "拆裝馬達與減速機、調整齒條嚙合、螺栓扭力" },
+  { role = "吊掛作業人員", n = 1, duty = "持吊掛相關證照：減速機吊掛" },
+]
+safety = [
+  "控制器斷電並上鎖掛牌；行走軸滑座以止動塊或楔塊固定，防止滑移",
+  "軌道兩端與滑座周邊設警戒區，禁止人員進入行走範圍",
+  "吊掛由持證人員指揮；減速機重量依手冊確認吊具荷重",
+]
+steps = [
+  { name = "準備：核對減速機型號、備份控制器、斷電上鎖、固定滑座", crew = 2, hours = 0.75 },
+  { name = "拆下馬達（標記線材），拆下減速機與小齒輪", crew = 3, hours = 1.5 },
+  { name = "檢查齒條磨耗與異物；裝新減速機與小齒輪，調整嚙合間隙", crew = 3, hours = 2.0 },
+  { name = "裝回馬達、接線、給脂；零點校正並以既有程式點位確認", crew = 2, hours = 1.25 },
+  { name = "低速往返試運轉、異音與溫度檢查；執行 DTM_DIAG（E1 段）並登錄事件", crew = 2, hours = 0.75 },
+]
+
+[[pack.parts]]
+name = "E1 行走軸減速機（齒輪箱）"
+pn = "依行走軸 Parts list"
+qty = 1
+unit = "台"
+stock = 0
+verified = false
+note = "以行走軸銘牌與廠商手冊為準"
+main = true
+
+[[pack.parts]]
+name = "E1 小齒輪（嚙合齒條側）"
+pn = "依行走軸 Parts list"
+qty = 1
+unit = "個"
+verified = false
+note = "小齒輪磨耗時一併更換"
+
+[[pack.parts]]
+name = "齒輪箱與齒條用潤滑脂"
+pn = "依行走軸手冊指定"
+qty = 1
+unit = "批"
+grease = true
+verified = false
+
+# ---------------------------------------------------------------- E1 行走軸給脂（齒輪箱與齒條）
+[[pack]]
+id = "R2000iC165F-E1-grease"
+title = "E1 行走軸給脂（齒輪箱、齒條與小齒輪）"
+comp = "grease"
+axes = [7]
+crew = 2
+hours_min = 1
+hours_max = 2
+hours_note = "參考估算；給脂週期與給脂量依行走軸廠商手冊（自動給脂器的話檢查殘量與出脂）"
+toolsets = ["grease", "check", "ppe"]
+roles = [
+  { role = "作業負責人", n = 1, duty = "機器人維修技師：上鎖掛牌、行走軸低速往返" },
+  { role = "給脂人員", n = 1, duty = "齒輪箱給脂、齒條清潔與塗脂、自動給脂器檢查" },
+]
+safety = [
+  "給脂、清潔齒條時斷電上鎖並固定滑座",
+  "需要往返運轉讓油脂分布時，人員退出行走範圍、倍率 10% 以下",
+]
+steps = [
+  { name = "斷電上鎖、固定滑座，清除齒條舊脂與粉塵，目視檢查齒面", crew = 2, hours = 0.5 },
+  { name = "齒輪箱依手冊給脂（排脂口打開）；齒條與小齒輪塗脂或補充自動給脂器", crew = 2, hours = 0.5 },
+  { name = "低速全行程往返數次讓油脂分布；在 DTM 登錄換脂", crew = 2, hours = 0.5 },
+]
+
+[[pack.parts]]
+name = "齒輪箱與齒條用潤滑脂"
+pn = "依行走軸手冊指定"
+qty = 1
+unit = "批"
+grease = true
+verified = false
+
+# ---------------------------------------------------------------- 欄位說明
+# [[pack]]
+#   id          唯一代碼
+#   title       顯示名稱
+#   comp        元件：grease｜reducer｜gearbox｜motor（對應維護決策的三個建議）
+#   axes        適用軸，例如 [3]；空陣列 = 全部軸
+#   crew        人數；roles 列出分工（role、n、duty）
+#   hours_min／hours_max  停機工時範圍（小時）；steps 每步的 hours 加總會另外顯示
+#   sop_url     SOP 文件位置（內網或文件系統的網址）
+#   toolsets    引用上方的工具組；tools 可另外列本作業專用工具
+#   safety      作業安全指令（列印工單時每項有勾選欄）
+#   steps       步驟：name、crew、hours
+# [[pack.parts]]
+#   name、pn（料號）、qty、unit、stock（庫存，選填）、verified（是否已依 Parts list 確認）、source（料號來源）、note
+#   price（單價，選填）：保養材料費估算用；備品庫存（「保養與備品」頁）有同料號或同名稱的單價時，以庫存的單價為準
+#   main = true：主件（減速機、馬達）；料號還沒確認時，用備品庫存裡同元件、同軸那一項的單價
+#   grease = true 的品項會依設定檔 [axis.N] grease_mass_g 自動加註本軸給脂量與建議準備量（1.5 倍）

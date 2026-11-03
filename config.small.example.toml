@@ -1,0 +1,113 @@
+# DTM 小型模式設定範本（10 台以下、沒有中央伺服器；1 台也能用）
+#
+# 用法：
+#   1. 把這個檔案複製一份，改名為 config.small.toml
+#   2. 修改下面的廠區名稱、機器人 IP、通知方式
+#   3. 雙擊 start_small.bat（或執行 python -m dtm -c config.small.toml run）
+#
+# 運作方式：
+# - 這台電腦替每台機器人啟動一個獨立的監測程式（一台一個資料庫、一個儀表板），一台出問題不影響其他台。
+# - 通知由這台電腦統一發：各機器人程式不各自發，避免重複；警報 30 分鐘沒人確認會逐級通報。
+#   （這台主程式停擺超過 edge_fallback_s，各機器人程式才會自己發「警戒」當備援。）
+# - 本廠所有機器人的更換紀錄合在一起算壽命統計（Weibull），寫到 run/rules.json 給各台使用；
+#   紀錄不夠時用 [life.prior] 的先驗，畫面上會標示壽命模型的來源。
+# - 每日摘要就是「心跳」：每天準時收到摘要，代表系統還活著；哪天沒收到，就去看一下這台電腦。
+# - 之後要接中央伺服器，只要在 [central] 填網址與金鑰，其他設定不用改。
+
+[system]
+role = "edge"
+site_id = "S1"                 # 廠區代碼（英數字）
+site_name = "一廠"
+
+[web]
+host = "0.0.0.0"
+port = 8080                    # 全廠儀表板 http://這台電腦的IP:8080；各機器人的儀表板是 8101、8102…
+public_host = ""               # 這台電腦的 IP（通知訊息裡的連結會用到），例如 "10.1.2.3"
+users_db = "users.sqlite3"     # 第一次開啟儀表板時，在這台電腦上建立管理員帳號
+
+[fleet]
+base_port = 8100
+data_dir = "data"              # 每台一個資料庫：data/R01.sqlite3
+stale_s = 120                  # 機器人程式超過 2 分鐘沒回應 → 自動重啟那一台
+max_restarts = 3               # 每台每小時最多自動重啟 3 次，超過就停止並通知
+
+[central]
+url = ""                       # 空白 = 小型模式（不接中央）
+token = ""
+rules_every_s = 3600           # 每小時重算一次本廠壽命統計
+
+[robot]                        # 所有機器人共用
+source = "fanuc_http"
+poll_hz = 5
+model = "R-2000iC/165F"
+
+[axes]
+enabled = [1, 2, 3, 4, 5, 6]
+
+[axis.4]
+reducer_type = "gearbox"
+[axis.5]
+reducer_type = "gearbox"
+[axis.6]
+reducer_type = "gearbox"
+
+[motion]
+enabled = true
+
+[storage]
+backup_dir = "backups"         # 每天凌晨自動備份每台的資料庫
+backup_mirror_dir = ""         # 第二份備份放網路資料夾（選填），例如 '\\NAS01\dtm_backup'
+
+[workpack]
+catalog = "workpacks.r2000ic_165f.toml"
+
+[notify]
+public_url = ""                # 全廠儀表板網址，會附在 Email／Webhook 訊息裡，例如 "http://10.1.2.3:8080"
+min_level = 1                  # Email、Webhook：1 = 注意以上
+summary_time = "07:30"         # 每日摘要（心跳）時間
+summary_channels = ["email", "webhook", "sms"]   # 簡訊只發一行，計入每日上限
+quiet_hours = "22:00-07:00"    # 夜間「注意」併入早上的摘要；「警戒」照常即時發
+edge_fallback_s = 300
+email_enabled = false
+smtp_host = "mail.example.com"
+smtp_port = 25
+mail_from = "dtm@example.com"
+mail_to = ["maint@example.com"]
+webhook_url = ""               # 要接 LINE 群組，請看 README「用 Webhook 自行接 LINE」
+
+[notify.escalation]
+enabled = true
+min_level = 2
+stage2_after_s = 1800          # 警戒 30 分鐘沒人確認 → 第 2 階段（例如值班簡訊）
+stage3_after_s = 7200          # 2 小時沒人確認 → 第 3 階段（例如課長）
+
+[notify.sms]
+enabled = false
+provider = "modem"             # modem = USB 4G 簡訊數據機（不需網際網路，需 pip install pyserial）；http = 簡訊商 HTTP 閘道
+to = ["0912345678"]
+min_level = 2
+max_per_day = 30
+
+[notify.sms.modem]
+port = "COM3"
+baud = 115200
+
+[life.prior]                   # 本廠失效紀錄不足 3 筆時用的先驗（beta 形狀、eta_h 特徵壽命）；0 = 不做年齡風險
+reducer = { beta = 0.0, eta_h = 0.0 }
+gearbox = { beta = 0.0, eta_h = 0.0 }
+motor = { beta = 0.0, eta_h = 0.0 }
+
+# ---- 機器人清單：一台一個 [[robots]]（1 台也可以）
+[[robots]]
+id = "R01"
+name = "R01"
+host = "192.168.10.11"         # 控制器 IP
+line = "L1"
+impact = "中"                  # 停機影響度：高／中／低
+
+[[robots]]
+id = "R02"
+name = "R02"
+host = "192.168.10.12"
+line = "L1"
+impact = "高"

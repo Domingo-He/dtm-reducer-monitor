@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "如果你在報告、論文或改作中使用本軟體，請依下列資訊引用。If you use this software, please cite it as below."
+title: "DTM: Disturbance Torque Monitor for FANUC robot reducers"
+type: software
+authors:
+  - family-names: He
+    given-names: Domingo
+    email: domimgo491@gmail.com
+version: 2.1.0
+date-released: "2026-11-03"
+repository-code: "https://github.com/Domingo-He/dtm-reducer-monitor"
+url: "https://github.com/Domingo-He/dtm-reducer-monitor"
+license: Apache-2.0
+abstract: >-
+  DTM turns the disturbance torque that a FANUC robot controller already computes into a
+  reducer health monitor without extra sensors or production stops. It separates friction from
+  gravity offset with short diagnostic runs or daily medians of production motions, compares each
+  axis with its own baseline, and combines torque with vibration, iron-powder and temperature
+  evidence and Weibull component life to recommend grease changes, reducer or gearbox replacement
+  and servo-motor inspection. Beta: thresholds still need field validation.
+keywords:
+  - predictive maintenance
+  - condition monitoring
+  - industrial robot
+  - FANUC
+  - RV reducer
+  - disturbance torque
+  - iron powder
+  - Weibull

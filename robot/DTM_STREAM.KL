@@ -1,0 +1,69 @@
+-- ============================================================================
+-- DTM_STREAM : DTM Pro diagnostic-period stream (TEMPLATE - NOT TESTED ON A
+--              REAL CONTROLLER; verify every system variable on your version)
+--
+-- Sends one text line per loop to the DTM PC (python -m dtm pro listen):
+--   ms,line,J1..J6,T1..T6        (N_AX = 7 adds E1 when it is in group 1)
+-- ms   = $FAST_CLOCK (milliseconds; DTM aligns it to PC time)
+-- line = R[114] written by the instrumented program (python -m dtm pro instrument)
+-- J    = joint angles (deg), T = torque per axis
+--
+-- Torque: this template sends the disturbance torque $MOR_GRP[1].$CUR_DIS_TRQ[i]
+-- (the same variable as DTM_BG.LS). Damage accounting needs the TRANSMITTED
+-- torque (torque command or motor current x ratio). Replace the variable if
+-- your controller exposes it, or use a clamp current sensor; otherwise set
+-- [pro] torque = "disturbance" in config.toml (damage ranking = reference only).
+--
+-- Needs: KAREL option to load the .PC file, socket messaging option.
+-- Setup: MENU > SETUP > Host Comm > Clients > C3: protocol SM, remote host =
+--        DTM PC, port = [pro] listen_port (9750). Start it only during the
+--        diagnostic period (3-7 days); abort it afterwards.
+-- Rate:  DELAY sets the loop period; the real rate depends on controller load
+--        (target 50-125 Hz). DTM uses the timestamps, not a fixed rate.
+-- ============================================================================
+PROGRAM DTM_STREAM
+%NOLOCKGROUP
+%NOPAUSE = ERROR + COMMAND + TPENABLE
+%COMMENT = 'DTM Pro stream'
+CONST
+  LINE_REG  = 114
+  N_AX      = 6
+  PERIOD_MS = 8
+VAR
+  f      : FILE
+  st     : INTEGER
+  jp     : JOINTPOS
+  ang    : ARRAY[9] OF REAL
+  i      : INTEGER
+  rflag  : BOOLEAN
+  ival   : INTEGER
+  rval   : REAL
+  t_ms   : INTEGER
+BEGIN
+  SET_FILE_ATR(f, ATR_IA)
+  MSG_DISCO('C3:', st)
+  MSG_CONNECT('C3:', st)
+  IF st <> 0 THEN
+    WRITE TPERROR('DTM_STREAM: connect failed ', st, CR)
+    ABORT
+  ENDIF
+  OPEN FILE f ('RW', 'C3:')
+  WHILE TRUE DO
+    t_ms = $FAST_CLOCK
+    jp = CURJPOS(0, 0)
+    CNV_JPOS_REL(jp, ang, st)
+    GET_REG(LINE_REG, rflag, ival, rval, st)
+    IF rflag THEN
+      ival = ROUND(rval)
+    ENDIF
+    WRITE f(t_ms, ',', ival)
+    FOR i = 1 TO N_AX DO
+      WRITE f(',', ang[i]::1::3)
+    ENDFOR
+    FOR i = 1 TO N_AX DO
+      WRITE f(',', $MOR_GRP[1].$CUR_DIS_TRQ[i]::1::3)
+    ENDFOR
+    WRITE f(CR)
+    DELAY PERIOD_MS
+  ENDWHILE
+END DTM_STREAM

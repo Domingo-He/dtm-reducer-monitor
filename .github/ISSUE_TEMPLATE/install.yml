@@ -1,0 +1,43 @@
+name: 安裝問題
+description: 照 README 安裝或啟動時卡住
+title: "[安裝] "
+labels: ["install"]
+body:
+  - type: markdown
+    attributes:
+      value: 請貼文字（不要截整個畫面），並先把 IP、帳號、密碼、電話等改成 xxx。
+  - type: input
+    id: os
+    attributes:
+      label: 作業系統
+      placeholder: 例：Windows 10 22H2、Windows Server 2019
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python 版本（python --version）與 DTM 版本（python -m dtm version）
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: 使用模式
+      options: [模擬器試跑, 單機, 小型模式, 邊緣主機, 中央伺服器, 中央演示]
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 做了哪些步驟
+      description: 例如雙擊了哪個檔案、執行了哪個指令
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: 錯誤訊息
+      description: 黑色視窗的訊息，或 python -m dtm -c 設定檔 check 的結果（請先去除 IP 與密碼）
+      render: text
+    validations:
+      required: true

@@ -1,0 +1,21 @@
+DTM - Disturbance Torque Monitor for FANUC robot reducers
+Copyright 2026 Domingo He
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Developed by Domingo He with AI assistance ("I design, AI writes the code,
+I verify"): the monitoring logic, thresholds and field procedures come from the
+author's maintenance experience; source code was written by an AI assistant
+(Anthropic Claude) under the author's design, review and testing.
+
+FANUC is a trademark of FANUC CORPORATION. This project is not affiliated with,
+endorsed by, or sponsored by FANUC CORPORATION. Model names are used only to
+identify compatible equipment.
+
+This product includes third-party software:
+  - WinSW (tools/winsw/), Copyright (c) 2008-2020 Kohsuke Kawaguchi, Sun Microsystems,
+    Inc., CloudBees, Inc., Oleg Nenashev and other contributors, MIT License
+    (see tools/winsw/LICENSE.txt).
+  - html2canvas 1.4.1 (dtm/static/vendor/html2canvas.min.js), Copyright (c) 2012
+    Niklas von Hertzen, MIT License (see dtm/static/vendor/html2canvas.LICENSE.txt).
+    Used only for the "full-page screenshot" button; it runs in the browser.
