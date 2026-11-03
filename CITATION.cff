@@ -11,6 +11,7 @@ date-released: "2026-11-03"
 repository-code: "https://github.com/Domingo-He/dtm-reducer-monitor"
 url: "https://github.com/Domingo-He/dtm-reducer-monitor"
 license: Apache-2.0
+doi: "10.5281/zenodo.23910956"
 abstract: >-
   DTM turns the disturbance torque that a FANUC robot controller already computes into a
   reducer health monitor without extra sensors or production stops. It separates friction from

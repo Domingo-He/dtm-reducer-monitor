@@ -2,6 +2,8 @@
 
 **English** | [繁體中文](README.zh-TW.md)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23910956.svg)](https://doi.org/10.5281/zenodo.23910956)
+
 > **Beta: decision thresholds still need field validation.** v2.1.0 is the first public release. The algorithms and thresholds have been tuned with simulated data and scenario tests, but have not yet been validated over the long term on a real production line. Start with a "shadow mode" trial (see [Recommendations for the first deployment](#recommendations-for-the-first-deployment)) and do not decide on stops or replacements based on this system's recommendations alone.
 
 | Item | Current status (v2.1.0) |
@@ -1217,7 +1219,7 @@ Data sources: central and edge hosts use the daily health level of each axis (th
 ## License and notices
 
 - **License**: Apache License 2.0 (`LICENSE`, `NOTICE`). You may freely use, modify and redistribute it (including commercially); keep the copyright and license notices, and mark modified files as changed. Apache-2.0 also contains a patent license clause: contributors license any patents covering their contributions to all users.
-- **Author and attribution**: Domingo He. When republishing, adapting or publishing derivative work, credit the original author and the project; do not use the author's name to endorse derivative versions. For citations, use `CITATION.cff`.
+- **Author and attribution**: Domingo He. When republishing, adapting or publishing derivative work, credit the original author and the project; do not use the author's name to endorse derivative versions. For citations, use `CITATION.cff` or the DOI [10.5281/zenodo.23910956](https://doi.org/10.5281/zenodo.23910956) (Zenodo archive of v2.1.0).
 - **Non-commercial maintenance**: this project is maintained by the author personally and non-commercially, with no sales, no paid support and no patent applications. Use GitHub Issues for problem reports and suggestions; the author will do his best to respond, but response times and fixes are not guaranteed.
 - **No warranty**: the software is provided "as is", without any express or implied warranty (see sections 7 and 8 of `LICENSE`). Monitoring results are only an input to maintenance decisions; decisions on replacements, stops and safety must be made by qualified personnel according to the manufacturer's manuals and conditions on site. The author is not liable for any loss caused by using this software.
 - **Patents**: the author has not applied for any patent on this system and publishes the details of the methods in the technical disclosure (defensive publication). The author cannot guarantee, however, that the software does not touch patents held by others in various countries; check before using, manufacturing or selling it in your country or region.
