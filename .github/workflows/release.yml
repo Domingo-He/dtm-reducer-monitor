@@ -67,6 +67,9 @@ jobs:
           python-version: "3.12"
       - name: 產生 Windows 免安裝版
         shell: pwsh
+        env:
+          PYTHONUTF8: "1"
+          PYTHONIOENCODING: utf-8
         run: |
           python tools/build_windows.py --out dist
           $zip = Get-ChildItem dist -Filter "DTM-*-win64.zip" | Select-Object -First 1
