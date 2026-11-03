@@ -2,6 +2,7 @@
 # 1. 用 git ls-files 打包原始碼 zip；2. 在 Windows 主機產生免安裝版（內含 Python）；
 # 3. 產生軟體物料清單 SBOM（CycloneDX，tools/sbom.py）；4. 為檔案建立建置來源證明（artifact attestation）；
 # 5. 附加到這個 Release。
+# Release 事件沒有觸發時：到 Actions → release → Run workflow，填入標籤（例如 v2.1.0）補附件。
 # 驗證：gh attestation verify 檔名.zip --repo 帳號/倉庫
 name: release
 
@@ -9,17 +10,27 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "要補附件的 Release 標籤（例如 v2.1.0）；留空只產生檔案、不附加"
+        required: false
+        default: ""
 
 permissions:
   contents: write
   id-token: write
   attestations: write
 
+env:
+  TAG: ${{ github.event.release.tag_name || inputs.tag }}
+
 jobs:
   source:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG || github.ref }}
       - name: 打包原始碼（只含納入版本管理的檔案）
         run: |
           VER=$(python3 -c "import re;print(re.search(r'__version__ = \"(.+?)\"', open('dtm/__init__.py', encoding='utf-8').read()).group(1))")
@@ -34,10 +45,10 @@ jobs:
             torque_monitor_v${{ env.VER }}.zip
             dtm-${{ env.VER }}-sbom.cdx.json
       - name: 附加到 Release
-        if: github.event_name == 'release'
+        if: env.TAG != ''
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${{ github.event.release.tag_name }}" "torque_monitor_v${VER}.zip" "dtm-${VER}-sbom.cdx.json" --clobber
+        run: gh release upload "$TAG" "torque_monitor_v${VER}.zip" "dtm-${VER}-sbom.cdx.json" --clobber
       - uses: actions/upload-artifact@v4
         with:
           name: source-zip
@@ -49,6 +60,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG || github.ref }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -62,11 +75,11 @@ jobs:
         with:
           subject-path: ${{ env.WINZIP }}
       - name: 附加到 Release
-        if: github.event_name == 'release'
+        if: env.TAG != ''
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${{ github.event.release.tag_name }}" "$env:WINZIP" --clobber
+        run: gh release upload "$env:TAG" "$env:WINZIP" --clobber
       - uses: actions/upload-artifact@v4
         with:
           name: windows-portable
